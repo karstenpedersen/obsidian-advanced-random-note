@@ -1,9 +1,9 @@
 {
 	"id": "advanced-random-note",
 	"name": "Advanced Random Note",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Customize random notes",
+	"version": "0.0.6",
+	"minAppVersion": "1.3.5",
+	"description": "Create commands from custom queries to open random notes ",
 	"author": "Obsidian",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
