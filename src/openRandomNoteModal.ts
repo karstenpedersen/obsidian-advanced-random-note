@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import TestComponent from "./TestComponent.svelte";
+import TestComponent from "./OpenRandomNoteModal.svelte";
 import { RandomNoteQuery } from "./types";
 
 export class RandomNoteModal extends Modal {
@@ -13,7 +13,7 @@ export class RandomNoteModal extends Modal {
 		this.queries = queries;
 		this.view = new TestComponent({
 			target: this.contentEl,
-			props: { queries },
+			props: { queries, handleSubmit: this.handleSubmit },
 		});
 	}
 

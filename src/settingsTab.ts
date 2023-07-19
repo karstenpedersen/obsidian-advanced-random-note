@@ -57,9 +57,8 @@ export class SettingTab extends PluginSettingTab {
 
 		this.plugin.settings.queries.forEach((query, index) => {
 			const s = new Setting(this.containerEl)
-				.addText((text) =>
-					text
-						.setPlaceholder("Name")
+				.addText((text) => {
+					text.setPlaceholder("Name")
 						.setValue(query.name)
 						.onChange(async (value) => {
 							// Change query name
@@ -72,19 +71,20 @@ export class SettingTab extends PluginSettingTab {
 							);
 
 							await this.plugin.saveSettings();
-						})
-				)
-				.addText((text) =>
-					text
-						.setPlaceholder("Query")
+						});
+					text.inputEl.addClass("arn-input");
+				})
+				.addText((text) => {
+					text.setPlaceholder("Query")
 						.setValue(query.query)
 						.onChange(async (value) => {
 							// Change query
 							this.plugin.settings.queries[index].query =
 								value.trim();
 							await this.plugin.saveSettings();
-						})
-				)
+						});
+					text.inputEl.addClass("arn-input");
+				})
 				.addToggle((cb) => {
 					cb.setTooltip("Create command")
 						.setValue(

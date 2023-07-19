@@ -1,5 +1,5 @@
 import { Plugin, TFile } from "obsidian";
-import { RandomNoteModal } from "./randomNoteModal";
+import { RandomNoteModal } from "./openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, type Settings } from "./settings";
 import { SettingTab } from "./settingsTab";
@@ -21,7 +21,19 @@ export default class AdvancedRandomNote extends Plugin {
 			id: "open-random-note-modal",
 			name: "Open random note modal",
 			callback: () => {
-				new RandomNoteModal(this.app, this.settings.queries).open();
+				const modal = new RandomNoteModal(
+					this.app,
+					this.settings.queries
+				);
+
+				modal.submitCallback = async (
+					query: RandomNoteQuery
+				): Promise<void> => {
+					const files = new Search(this).search(query);
+					await this.openRandomNote(files);
+				};
+
+				modal.open();
 			},
 		});
 
