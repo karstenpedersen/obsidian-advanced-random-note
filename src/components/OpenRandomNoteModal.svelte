@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { RandomNoteQuery } from "./types";
+	import { RandomNoteQuery } from "../types";
 
 	export let queries: RandomNoteQuery[];
 	export let handleSubmit: (query: RandomNoteQuery) => void;

@@ -69,9 +69,6 @@ export class Search {
 	checkFileToMatchQuery(file: TFile, query: RandomNoteQuery) {
 		// Process query
 		const processedQuery = this.processQuery(query);
-
-		console.log(processedQuery);
-
 		return (
 			this.checkDisabledFolderPath(processedQuery.path, file) &&
 			this.checkTagsWithFile(processedQuery.tags, file) &&

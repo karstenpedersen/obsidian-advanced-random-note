@@ -1,5 +1,5 @@
 import { App, Modal } from "obsidian";
-import TestComponent from "./OpenRandomNoteModal.svelte";
+import TestComponent from "./components/OpenRandomNoteModal.svelte";
 import { RandomNoteQuery } from "./types";
 
 export class RandomNoteModal extends Modal {

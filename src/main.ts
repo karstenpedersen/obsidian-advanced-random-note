@@ -14,6 +14,7 @@ export default class AdvancedRandomNote extends Plugin {
 	settings!: Settings;
 
 	async onload() {
+		// Load plugin settings
 		await this.loadSettings();
 
 		// Add random note modal command
@@ -25,12 +26,22 @@ export default class AdvancedRandomNote extends Plugin {
 					this.app,
 					this.settings.queries,
 					async (query: RandomNoteQuery) =>
-						this.searchAndOpenNote(query)
+						this.executeRandomNoteQuery(query)
 				);
 				modal.open();
 			},
 		});
 
+		// Open generic random note
+		this.addCommand({
+			id: "open-random-note",
+			name: "Open random note",
+			callback: () => {
+				this.openRandomNote(this.app.vault.getMarkdownFiles());
+			},
+		});
+
+		// Setup saved queries
 		this.addQueryCommands();
 
 		// Add settings tab
@@ -40,8 +51,6 @@ export default class AdvancedRandomNote extends Plugin {
 			console.log("Loaded " + this.manifest.name);
 		}
 	}
-
-	onunload() {}
 
 	async loadSettings() {
 		this.settings = Object.assign(
@@ -55,25 +64,6 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async openRandomNote(files: TFile[]) {
-		// Get random note from files
-		const file = getRandomElement(files);
-
-		if (!file) {
-			if (this.settings.debug)
-				console.log("Could not find a file matching the defined query");
-			return;
-		}
-
-		if (this.settings.debug) {
-			console.log("Found and opened file:");
-			console.log(file);
-		}
-
-		// Open file
-		await this.openNote(file);
-	}
-
 	async openNote(file: TFile) {
 		await this.app.workspace.openLinkText(
 			file.basename,
@@ -85,7 +75,20 @@ export default class AdvancedRandomNote extends Plugin {
 		);
 	}
 
-	async searchAndOpenNote(query: RandomNoteQuery) {
+	async openRandomNote(files: TFile[]) {
+		// Get random note from files
+		const file = getRandomElement(files);
+
+		if (this.settings.debug) {
+			console.log("Found and opened file:");
+			console.log(file);
+		}
+
+		// Open file
+		await this.openNote(file);
+	}
+
+	async executeRandomNoteQuery(query: RandomNoteQuery) {
 		const files = new Search(this).search(query);
 
 		if (files.length <= 0) {
@@ -94,21 +97,22 @@ export default class AdvancedRandomNote extends Plugin {
 			);
 			return;
 		}
+
 		await this.openRandomNote(files);
 	}
 
 	addQueryCommands() {
 		// Add query commands
-		this.settings.queries.forEach((query) => this.addQueryCommand(query));
+		this.settings.queries.forEach(
+			(query) => query.createCommand && this.addQueryCommand(query)
+		);
 	}
 
 	addQueryCommand(query: RandomNoteQuery) {
-		if (!query.createCommand) return;
-
 		this.addCommand({
 			id: query.id,
 			name: query.name,
-			callback: async () => this.searchAndOpenNote(query),
+			callback: async () => this.executeRandomNoteQuery(query),
 		});
 	}
 
