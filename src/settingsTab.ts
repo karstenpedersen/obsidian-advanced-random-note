@@ -17,7 +17,7 @@ export class SettingTab extends PluginSettingTab {
 
 		new Setting(this.containerEl)
 			.setName("Open in new leaf")
-			.setDesc("Files opens in new tabs")
+			.setDesc("Opens random notes in new tabs")
 			.addToggle((text) =>
 				text
 					.setValue(this.plugin.settings.openInNewLeaf)
