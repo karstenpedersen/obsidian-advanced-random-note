@@ -8,13 +8,18 @@ export class RandomNoteModal extends Modal {
 	submitCallback: ((query: RandomNoteQuery) => Promise<void>) | undefined =
 		undefined;
 
-	constructor(app: App, queries: RandomNoteQuery[]) {
+	constructor(
+		app: App,
+		queries: RandomNoteQuery[],
+		submitCallback: (query: RandomNoteQuery) => Promise<void>
+	) {
 		super(app);
 		this.queries = queries;
 		this.view = new TestComponent({
 			target: this.contentEl,
 			props: { queries, handleSubmit: this.handleSubmit },
 		});
+		this.submitCallback = submitCallback;
 	}
 
 	handleSubmit = (query: RandomNoteQuery): void => {

@@ -1,4 +1,4 @@
-import { Plugin, TFile } from "obsidian";
+import { Notice, Plugin, TFile } from "obsidian";
 import { RandomNoteModal } from "./openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, type Settings } from "./settings";
@@ -16,23 +16,17 @@ export default class AdvancedRandomNote extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// Add modal command
+		// Add random note modal command
 		this.addCommand({
 			id: "open-random-note-modal",
 			name: "Open random note modal",
 			callback: () => {
 				const modal = new RandomNoteModal(
 					this.app,
-					this.settings.queries
+					this.settings.queries,
+					async (query: RandomNoteQuery) =>
+						this.searchAndOpenNote(query)
 				);
-
-				modal.submitCallback = async (
-					query: RandomNoteQuery
-				): Promise<void> => {
-					const files = new Search(this).search(query);
-					await this.openRandomNote(files);
-				};
-
 				modal.open();
 			},
 		});
@@ -77,6 +71,10 @@ export default class AdvancedRandomNote extends Plugin {
 		}
 
 		// Open file
+		await this.openNote(file);
+	}
+
+	async openNote(file: TFile) {
 		await this.app.workspace.openLinkText(
 			file.basename,
 			"",
@@ -85,6 +83,18 @@ export default class AdvancedRandomNote extends Plugin {
 				active: true,
 			}
 		);
+	}
+
+	async searchAndOpenNote(query: RandomNoteQuery) {
+		const files = new Search(this).search(query);
+
+		if (files.length <= 0) {
+			new Notice(
+				"Advanced Random Note: Found zero notes matching your query."
+			);
+			return;
+		}
+		await this.openRandomNote(files);
 	}
 
 	addQueryCommands() {
@@ -98,10 +108,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: query.id,
 			name: query.name,
-			callback: async () => {
-				const files = new Search(this).search(query);
-				await this.openRandomNote(files);
-			},
+			callback: async () => this.searchAndOpenNote(query),
 		});
 	}
 

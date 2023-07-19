@@ -16,6 +16,7 @@ export class Search {
 	}
 
 	search(query: RandomNoteQuery): RandomNoteResult {
+		// Get markdown files in vault
 		const files = this.plugin.app.vault.getMarkdownFiles();
 
 		if (this.plugin.settings.debug) {
@@ -23,9 +24,15 @@ export class Search {
 			console.log(query);
 		}
 
+		// Find files that match query
 		const result = files.filter((file) => {
 			return this.checkFileToMatchQuery(file, query);
 		});
+
+		if (this.plugin.settings.debug) {
+			console.log("Found these files:");
+			console.log(result);
+		}
 
 		return result;
 	}
@@ -60,7 +67,10 @@ export class Search {
 	}
 
 	checkFileToMatchQuery(file: TFile, query: RandomNoteQuery) {
+		// Process query
 		const processedQuery = this.processQuery(query);
+
+		console.log(processedQuery);
 
 		return (
 			this.checkDisabledFolderPath(processedQuery.path, file) &&
