@@ -1,95 +1,91 @@
-# Obsidian Sample Plugin
+# Advanced Random Note Obsidian Plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+This plugin enables you to create custom queries for opening random notes.
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+-   Create custom queries on the settings tab
+    -   Find random notes using filename, path and tags
+    -   Enable them as commands
+-   Open Random Note Modal: Open modal to select query
+-   Open Random Note: Open note from the vault
+-   Disable folders from being included in the searches
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+### Settings Tab
 
-## First time developing plugins?
+![Settings Image](./settings-screenshot.png)
 
-Quick starting guide for new plugin devs:
+## Installation
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### Obsidian
 
-## Releasing new releases
+1.  Open Settings
+2.  Go to "Community Plugins"
+3.  Enable community plugins by pressing "Turn on community plugins"
+4.  Click "Browse" to browse available community plugins
+5.  Search for "Advanced Random Note"
+6.  Click install and enable the plugin
+7.  Close the community plugins window
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Getting Started
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Queries
 
-## Adding your plugin to the community plugin list
+This plugin queries markdown notes using syntax similar to the [Obsidian Search](https://help.obsidian.md/Plugins/Search) plugin but is more primitive.
 
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+#### Tags
 
-## How to use
+You can query files by their tags. Do this by specifying the `tag:` keyword. After this, you can write multiple tags that should be included and excluded from the file.
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+-   If tags should not be in the file, then write `!` in front of them, like this: `tag: idea !complete`. This will get files which have the `idea` tag, but not the `complete` tag.
+-   You can also write `#` in front of the tags, like this: `#idea` and `!#complete`,
 
-## Manually installing the plugin
+#### Paths
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+You can query files by their path. To do this, specify the `path:` keyword and write what the path should contain to be included in the result.
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+#### Filename
 
-## Funding URL
+You can query files by their filename. To do this, specify the `file:` keyword and write what the filename should contain to be included in the result.
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Disabled Folders
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+You can disable folders to remove them from being searched. This can be useful if you have a template folder that you do not want to open files from.
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+### Enable Queries as Commands
 
-If you have multiple URLs, you can also do:
+Queries can be enabled as commands by clicking the toggle next to them when on the plugins settings tab. This can be useful in combination with the [Commander](https://github.com/phibr0/obsidian-commander) plugin.
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+## Examples
 
-## API Documentation
+### Find Ideas in your Vault
 
-See https://github.com/obsidianmd/obsidian-api
+Find a random incomplete idea.
+
+-   Query: `tag: idea !complete`.
+
+### Find Untitled Files
+
+Find a note that is untitled.
+
+-   Query: `file: Untitled`
+
+### Find a Fleeting Note in the root Directory
+
+You can combine keywords.
+
+-   Query: `path: / tag: fleeting`
+
+## Version History
+
+### Version 0.0.6
+
+-   Add `Open Random Note` command
+-   Add `Open Random Note Modal` command
+-   Add plugin settings tab
+-   Add user queries
+-   Add ability to toggle user queries as commands
+
+## Contact
+
+-   Get in contact on the plugins GitHub

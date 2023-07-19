@@ -1,8 +1,7 @@
 import { Notice, Plugin, TFile } from "obsidian";
 import { RandomNoteModal } from "./openRandomNoteModal";
 import { Search } from "./search";
-import { DEFAULT_SETTINGS, type Settings } from "./settings";
-import { SettingTab } from "./settingsTab";
+import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
 import type { RandomNoteQuery } from "./types";
 import {
 	deleteObsidianCommand,
@@ -21,15 +20,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: "open-random-note-modal",
 			name: "Open random note modal",
-			callback: () => {
-				const modal = new RandomNoteModal(
-					this.app,
-					this.settings.queries,
-					async (query: RandomNoteQuery) =>
-						this.executeRandomNoteQuery(query)
-				);
-				modal.open();
-			},
+			callback: () => this.handleOpenRandomNoteModal(),
 		});
 
 		// Open generic random note
@@ -37,7 +28,7 @@ export default class AdvancedRandomNote extends Plugin {
 			id: "open-random-note",
 			name: "Open random note",
 			callback: () => {
-				this.openRandomNote(this.app.vault.getMarkdownFiles());
+				this.handleOpenRandomNote();
 			},
 		});
 
@@ -86,6 +77,19 @@ export default class AdvancedRandomNote extends Plugin {
 
 		// Open file
 		await this.openNote(file);
+	}
+
+	async handleOpenRandomNote() {
+		await this.openRandomNote(this.app.vault.getMarkdownFiles());
+	}
+
+	handleOpenRandomNoteModal() {
+		const modal = new RandomNoteModal(
+			this.app,
+			this.settings.queries,
+			async (query: RandomNoteQuery) => this.executeRandomNoteQuery(query)
+		);
+		modal.open();
 	}
 
 	async executeRandomNoteQuery(query: RandomNoteQuery) {
