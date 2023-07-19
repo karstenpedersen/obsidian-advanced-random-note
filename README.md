@@ -13,7 +13,7 @@ This plugin enables you to create custom queries for opening random notes.
 
 ### Settings Tab
 
-![Settings Image](./settings-screenshot.png)
+![Settings Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/settings-screenshot.png)
 
 ## Installation
 
