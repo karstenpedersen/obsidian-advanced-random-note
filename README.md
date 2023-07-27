@@ -5,9 +5,9 @@ This plugin enables you to create custom queries for opening random notes.
 ## Features
 
 -   Create custom queries on the settings tab
-    -   Find random notes using filename, path and tags
+    -   Find random notes using filename, path, and tags
     -   Enable them as commands
--   Open Random Note Modal: Open modal to select query
+-   Open Random Note Modal: Open modal to select a query
 -   Open Random Note: Open note from the vault
 -   Disable folders from being included in the searches
 
@@ -24,7 +24,7 @@ This plugin enables you to create custom queries for opening random notes.
 3.  Enable community plugins by pressing "Turn on community plugins"
 4.  Click "Browse" to browse available community plugins
 5.  Search for "Advanced Random Note"
-6.  Click install and enable the plugin
+6.  Click Install and enable the plugin
 7.  Close the community plugins window
 
 ## Getting Started
@@ -37,7 +37,7 @@ This plugin queries markdown notes using syntax similar to the [Obsidian Search]
 
 You can query files by their tags. Do this by specifying the `tag:` keyword. After this, you can write multiple tags that should be included and excluded from the file.
 
--   If tags should not be in the file, then write `!` in front of them, like this: `tag: idea !complete`. This will get files which have the `idea` tag, but not the `complete` tag.
+-   If tags should not be in the file, then write `!` in front of them, like this: `tag: idea !complete`. This will get files that have the `idea` tag, but not the `complete` tag.
 -   You can also write `#` in front of the tags, like this: `#idea` and `!#complete`,
 
 #### Paths
@@ -66,7 +66,7 @@ Find a random incomplete idea.
 
 ### Find Untitled Files
 
-Find a note that is untitled.
+Find an untitled note.
 
 -   Query: `file: Untitled`
 
