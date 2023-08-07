@@ -52,6 +52,10 @@ export function getTagString(tag: string): string {
 	}
 }
 
+export function getTagStrings(tags: string[]): string[] {
+	return tags.map(tag => getTagString(tag))
+}
+
 export function getDateId() {
 	return moment(new Date()).format("YYYYMMDDHHmmss");
 }

@@ -6,7 +6,7 @@ import type {
 	RandomNoteResult,
 	SearchTag,
 } from "./types";
-import { getTagString } from "./utilities";
+import { getTagString, getTagStrings } from "./utilities";
 
 export class Search {
 	plugin: AdvancedRandomNote;
@@ -78,20 +78,33 @@ export class Search {
 	}
 
 	checkTagsWithFile(tags: SearchTag[], file: TFile): boolean {
-		const fileTags =
-			this.plugin.app.metadataCache.getFileCache(file)?.tags ?? [];
+		const fileCache = this.plugin.app.metadataCache.getFileCache(file)
+		
+		// Get file tags
+		const fileCacheTags = fileCache?.tags ?? [];
+		const frontmatterTags = fileCache?.frontmatter?.tags ?? []
+		const frontmatterTag = fileCache?.frontmatter?.tag
+		
+		let fileTags = fileCacheTags.map(fileTag => fileTag.tag)
+		fileTags = fileTags.concat(getTagStrings(frontmatterTags))
+		if (frontmatterTag) {
+			fileTags.push(getTagString(frontmatterTag))
+		}
+
 		const includedTags = tags.filter((tag) => tag.included);
 		const excludedTags = tags.filter((tag) => !tag.included);
 		let includesTags = false;
 		let excludesTags = false;
+		
+		console.log(tags)
 
 		// Check included tags
 		includesTags =
 			(includedTags &&
 				fileTags &&
-				includedTags.every((tag) => {
-					return fileTags.some((tagCache) =>
-						tagCache.tag.includes(tag.tag)
+				includedTags.every((searchTag) => {
+					return fileTags.some((fileTag) =>
+						fileTag.includes(searchTag.tag)
 					);
 				})) ||
 			!includedTags;
@@ -100,9 +113,9 @@ export class Search {
 		excludesTags =
 			(excludedTags &&
 				fileTags &&
-				excludedTags.every((tag) => {
+				excludedTags.every((searchTag) => {
 					return fileTags.every(
-						(tagCache) => !tagCache.tag.includes(tag.tag)
+						(fileTag) => !fileTag.includes(searchTag.tag)
 					);
 				})) ||
 			(excludedTags && !fileTags) ||
