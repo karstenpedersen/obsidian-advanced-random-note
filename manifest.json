@@ -3,7 +3,7 @@
 	"name": "Advanced Random Note",
 	"version": "0.0.6",
 	"minAppVersion": "1.3.5",
-	"description": "Create commands from custom queries to open random notes ",
+	"description": "Create commands from custom queries to open random notes",
 	"author": "Karsten Finderup Pedersen",
 	"authorUrl": "https://github.com/karstenpedersen",
 	"isDesktopOnly": false
