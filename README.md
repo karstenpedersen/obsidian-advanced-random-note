@@ -78,6 +78,10 @@ You can combine keywords.
 
 ## Version History
 
+### Version 0.0.7
+
+- Fix frontmatter tags to also be included in queries
+
 ### Version 0.0.6
 
 -   Add `Open Random Note` command
