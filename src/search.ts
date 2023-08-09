@@ -1,6 +1,8 @@
 import { TFile } from "obsidian";
+import { getAPI } from "obsidian-dataview"
 import AdvancedRandomNote from "./main";
 import type {
+    ProcessedNormalQuery,
 	ProcessedQuery,
 	RandomNoteQuery,
 	RandomNoteResult,
@@ -15,29 +17,23 @@ export class Search {
 		this.plugin = plugin;
 	}
 
-	search(query: RandomNoteQuery): RandomNoteResult {
-		// Get markdown files in vault
-		const files = this.plugin.app.vault.getMarkdownFiles();
-
-		if (this.plugin.settings.debug) {
-			console.log("Searching for random note using the given query:");
-			console.log(query);
-		}
-
+	async search(query: RandomNoteQuery): Promise<RandomNoteResult> {
 		// Find files that match query
-		const result = files.filter((file) => {
-			return this.checkFileToMatchQuery(file, query);
-		});
-
-		if (this.plugin.settings.debug) {
-			console.log("Found these files:");
-			console.log(result);
+		let result: TFile[] = []
+		if (query.dataview) {
+			const api = getAPI();
+			await api?.query(query.query)
+		} else {
+			const files = this.plugin.app.vault.getMarkdownFiles();
+			result = files.filter((file) => {
+				return this.checkFileToMatchQuery(file, query);
+			});
 		}
 
 		return result;
 	}
 
-	processQuery(query: RandomNoteQuery): ProcessedQuery {
+	processNormalQuery(query: RandomNoteQuery): ProcessedNormalQuery {
 		const regexResult = {
 			path: /path:\s+(.*?)(tag:|file:|$)/.exec(query.query),
 			file: /file:\s+(.*?)(tag:|path:|$)/.exec(query.query),
@@ -68,7 +64,7 @@ export class Search {
 
 	checkFileToMatchQuery(file: TFile, query: RandomNoteQuery) {
 		// Process query
-		const processedQuery = this.processQuery(query);
+		const processedQuery = this.processNormalQuery(query);
 		return (
 			this.checkDisabledFolderPath(processedQuery.path, file) &&
 			this.checkTagsWithFile(processedQuery.tags, file) &&
@@ -96,8 +92,6 @@ export class Search {
 		let includesTags = false;
 		let excludesTags = false;
 		
-		console.log(tags)
-
 		// Check included tags
 		includesTags =
 			(includedTags &&

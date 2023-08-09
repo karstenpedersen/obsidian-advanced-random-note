@@ -18,8 +18,8 @@ export default class AdvancedRandomNote extends Plugin {
 
 		// Add random note modal command
 		this.addCommand({
-			id: "open-random-note-modal",
-			name: "Open random note modal",
+			id: "open-query-modal",
+			name: "Open query modal",
 			callback: () => this.handleOpenRandomNoteModal(),
 		});
 
@@ -28,7 +28,7 @@ export default class AdvancedRandomNote extends Plugin {
 			id: "open-random-note",
 			name: "Open random note",
 			callback: () => {
-				this.handleOpenRandomNote();
+				this.openRandomMarkdownFile();
 			},
 		});
 
@@ -79,7 +79,7 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.openNote(file);
 	}
 
-	async handleOpenRandomNote() {
+	async openRandomMarkdownFile() {
 		await this.openRandomNote(this.app.vault.getMarkdownFiles());
 	}
 
@@ -87,13 +87,13 @@ export default class AdvancedRandomNote extends Plugin {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
-			async (query: RandomNoteQuery) => this.executeRandomNoteQuery(query)
+			async (query: RandomNoteQuery) => this.executeQuery(query)
 		);
 		modal.open();
 	}
 
-	async executeRandomNoteQuery(query: RandomNoteQuery) {
-		const files = new Search(this).search(query);
+	async executeQuery(query: RandomNoteQuery) {
+		const files = await new Search(this).search(query);
 
 		if (files.length <= 0) {
 			new Notice(
@@ -116,7 +116,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: query.id,
 			name: query.name,
-			callback: async () => this.executeRandomNoteQuery(query),
+			callback: async () => this.executeQuery(query),
 		});
 	}
 

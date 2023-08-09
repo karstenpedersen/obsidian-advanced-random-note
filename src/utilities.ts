@@ -1,4 +1,6 @@
-import { App, moment, type PluginManifest } from "obsidian";
+import { App, type PluginManifest } from "obsidian";
+import { v4 as uuidv4 } from "uuid";
+import AdvancedRandomNote from "./main";
 import type { RandomNoteQuery } from "./types";
 
 export function moveElementInArray<T>(
@@ -17,6 +19,14 @@ export function moveElementInArray<T>(
 export function getRandomElement<T>(arr: T[]): T {
 	const index = Math.floor(Math.random() * arr.length);
 	return arr[index];
+}
+
+export function addOrRemoveQueryCommand(plugin: AdvancedRandomNote, query: RandomNoteQuery) {
+	if (query.createCommand) {
+		plugin.addQueryCommand(query);
+	} else {
+		plugin.removeQueryCommand(query);
+	}
 }
 
 export function findObsidianCommand(app: App, commandId: string) {
@@ -56,12 +66,8 @@ export function getTagStrings(tags: string[]): string[] {
 	return tags.map(tag => getTagString(tag))
 }
 
-export function getDateId() {
-	return moment(new Date()).format("YYYYMMDDHHmmss");
-}
-
 export function getQueryCommandId() {
-	return "query:" + getDateId();
+	return "query:" + uuidv4();
 }
 
 export function createQuery(name: string, query: string): RandomNoteQuery {
@@ -69,6 +75,7 @@ export function createQuery(name: string, query: string): RandomNoteQuery {
 		id: getQueryCommandId(),
 		name,
 		query,
+		dataview: false,
 		createCommand: false,
 	};
 }
