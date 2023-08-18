@@ -15,7 +15,7 @@
 			on:toggleCommandForQuery
 		/>
 	{:else}
-		 <p>Create a query</p>
+		<p>Create a query</p>
 	{/each}
 </div>
 

@@ -1,6 +1,6 @@
 import { App, Modal } from "obsidian";
 import Component from "./EditQueryModal.svelte";
-import { RandomNoteQuery } from "../types";
+import { RandomNoteQuery } from "src/types";
 
 export class EditQueryModal extends Modal {
 	view: Component;
@@ -17,8 +17,8 @@ export class EditQueryModal extends Modal {
 			target: this.contentEl,
 			props: {
 				query,
-				handleChange
-			}
+				handleChange,
+			},
 		});
 	}
 }

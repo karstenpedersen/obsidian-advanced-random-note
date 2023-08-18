@@ -1,4 +1,4 @@
-import { App, type PluginManifest } from "obsidian";
+import { App, TFile, type PluginManifest } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
 import AdvancedRandomNote from "./main";
 import type { RandomNoteQuery } from "./types";
@@ -21,7 +21,10 @@ export function getRandomElement<T>(arr: T[]): T {
 	return arr[index];
 }
 
-export function addOrRemoveQueryCommand(plugin: AdvancedRandomNote, query: RandomNoteQuery) {
+export function addOrRemoveQueryCommand(
+	plugin: AdvancedRandomNote,
+	query: RandomNoteQuery
+) {
 	if (query.createCommand) {
 		plugin.addQueryCommand(query);
 	} else {
@@ -63,7 +66,7 @@ export function getTagString(tag: string): string {
 }
 
 export function getTagStrings(tags: string[]): string[] {
-	return tags.map(tag => getTagString(tag))
+	return tags.map((tag) => getTagString(tag));
 }
 
 export function getQueryCommandId() {
@@ -75,7 +78,11 @@ export function createQuery(name: string, query: string): RandomNoteQuery {
 		id: getQueryCommandId(),
 		name,
 		query,
-		dataview: false,
+		type: "Default",
 		createCommand: false,
 	};
+}
+
+export function getFullPath(file: TFile): string {
+	return file.path + "/" + file.name + "." + file.path;
 }

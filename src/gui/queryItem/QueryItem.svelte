@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { faClone, faTrash, faCog, faBolt } from "@fortawesome/free-solid-svg-icons";
+	import {
+		faClone,
+		faTrash,
+		faCog,
+		faBolt,
+	} from "@fortawesome/free-solid-svg-icons";
 	import { Icon } from "svelte-awesome";
 	import { Component, MarkdownRenderer, htmlToMarkdown } from "obsidian";
 	import { RandomNoteQuery } from "src/types";
@@ -10,19 +15,19 @@
 
 	const deleteQuery = () => {
 		dispatch("deleteQuery", { query });
-	}
+	};
 
 	const editQuery = () => {
 		dispatch("editQuery", { query });
-	}
+	};
 
 	const duplicateQuery = () => {
 		dispatch("duplicateQuery", { query });
-	}
+	};
 
 	const toggleCommandForQuery = () => {
 		dispatch("toggleCommandForQuery", { query });
-	}
+	};
 
 	const component = new Component();
 	let nameElement: HTMLSpanElement;
@@ -47,7 +52,10 @@
 
 	<!-- Options -->
 	<div class="query-item__options">
-		<button class:active={query.createCommand} on:click={toggleCommandForQuery}>
+		<button
+			class:active={query.createCommand}
+			on:click={toggleCommandForQuery}
+		>
 			<Icon data={faBolt} />
 		</button>
 
@@ -58,7 +66,7 @@
 		<button on:click={duplicateQuery}>
 			<Icon data={faClone} />
 		</button>
-		
+
 		<button on:click={deleteQuery}>
 			<Icon data={faTrash} />
 		</button>

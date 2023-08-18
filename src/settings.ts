@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import AdvancedRandomNote from "./main";
 import type { RandomNoteQuery } from "./types";
-import QueryView from "./components/queryItem/QueryView.svelte";
+import QueryView from "src/gui/queryItem/QueryView.svelte";
 
 export interface Settings {
 	openInNewLeaf: boolean;
@@ -45,7 +45,7 @@ export class SettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
-		
+
 		// Disabled folders setting
 		new Setting(this.containerEl)
 			.setName("Disabled folders")
@@ -79,9 +79,9 @@ export class SettingTab extends PluginSettingTab {
 				saveQueries: (queries: RandomNoteQuery[]) => {
 					this.plugin.settings.queries = queries;
 					this.plugin.saveSettings();
-				}
-			}
-		})
+				},
+			},
+		});
 	}
 
 	addDebugSetting() {
@@ -90,7 +90,7 @@ export class SettingTab extends PluginSettingTab {
 			text: "Debug",
 			cls: "setting-item setting-item-heading",
 		});
-			
+
 		// Toggle debug mode setting
 		new Setting(this.containerEl)
 			.setName("Debug Mode")

@@ -1,10 +1,13 @@
 import { TFile } from "obsidian";
 
+export const QUERY_TYPES = ["Default", "Dataview", "Regex"] as const;
+export type QueryType = (typeof QUERY_TYPES)[number];
+
 export interface RandomNoteQuery {
 	id: string;
 	name: string;
 	query: string;
-	dataview: boolean;
+	type: QueryType;
 	createCommand: boolean;
 }
 

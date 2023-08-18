@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from "obsidian";
-import { RandomNoteModal } from "./openRandomNoteModal";
+import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
 import type { RandomNoteQuery } from "./types";
@@ -20,7 +20,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: "open-query-modal",
 			name: "Open query modal",
-			callback: () => this.handleOpenRandomNoteModal(),
+			callback: () => this.handleopenRandomFileModal(),
 		});
 
 		// Open generic random note
@@ -29,6 +29,15 @@ export default class AdvancedRandomNote extends Plugin {
 			name: "Open random note",
 			callback: () => {
 				this.openRandomMarkdownFile();
+			},
+		});
+
+		// Open generic random note
+		this.addCommand({
+			id: "open-random-file",
+			name: "Open random file",
+			callback: () => {
+				this.openRandomVaultFile();
 			},
 		});
 
@@ -55,18 +64,11 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async openNote(file: TFile) {
-		await this.app.workspace.openLinkText(
-			file.basename,
-			"",
-			this.settings.openInNewLeaf,
-			{
-				active: true,
-			}
-		);
+	async openFile(file: TFile) {
+		this.app.workspace.getLeaf().openFile(file);
 	}
 
-	async openRandomNote(files: TFile[]) {
+	async openRandomFile(files: TFile[]) {
 		// Get random note from files
 		const file = getRandomElement(files);
 
@@ -76,14 +78,18 @@ export default class AdvancedRandomNote extends Plugin {
 		}
 
 		// Open file
-		await this.openNote(file);
+		await this.openFile(file);
 	}
 
 	async openRandomMarkdownFile() {
-		await this.openRandomNote(this.app.vault.getMarkdownFiles());
+		await this.openRandomFile(this.app.vault.getMarkdownFiles());
 	}
 
-	handleOpenRandomNoteModal() {
+	async openRandomVaultFile() {
+		await this.openRandomFile(this.app.vault.getFiles());
+	}
+
+	handleopenRandomFileModal() {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
@@ -96,17 +102,13 @@ export default class AdvancedRandomNote extends Plugin {
 		const files = await new Search(this).search(query);
 
 		if (files.length <= 0) {
-			new Notice(
-				"Advanced Random Note: Found zero notes matching your query."
-			);
 			return;
 		}
 
-		await this.openRandomNote(files);
+		await this.openRandomFile(files);
 	}
 
 	addQueryCommands() {
-		// Add query commands
 		this.settings.queries.forEach(
 			(query) => query.createCommand && this.addQueryCommand(query)
 		);

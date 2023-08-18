@@ -1,41 +1,39 @@
 <script lang="ts">
 	import { RandomNoteQuery } from "src/types";
 	import QueryList from "./QueryList.svelte";
-	import { createQuery, getQueryCommandId, addOrRemoveQueryCommand } from "src/utilities";
-	import { EditQueryModal } from "../editQueryModal";
+	import {
+		createQuery,
+		getQueryCommandId,
+		addOrRemoveQueryCommand,
+	} from "src/utilities";
+	import { EditQueryModal } from "src/gui/modals/EditQueryModal/editQueryModal";
 	import AdvancedRandomNote from "src/main";
 
 	export let plugin: AdvancedRandomNote;
 	export let queries: RandomNoteQuery[];
 	export let saveQueries: (queries: RandomNoteQuery[]) => void;
-	let queryFormName = ""
+	let queryFormName = "";
 
 	const deleteQuery = (e: any) => {
 		const query: RandomNoteQuery = e.detail.query;
-		queries = queries.filter(q => q.id !== query.id);
+		queries = queries.filter((q) => q.id !== query.id);
 		plugin.removeQueryCommand(query);
 		saveQueries(queries);
-	}
+	};
 
 	const editQuery = (e: any) => {
 		const query: RandomNoteQuery = e.detail.query;
-		
-		const modal = new EditQueryModal(
-			plugin.app,
-			query,
-			(query) => {
-				console.log("EDIT")
-				addOrRemoveQueryCommand(query);
-				
-				queries = queries;
-				saveQueries(queries);
-			}
-		);
+
+		const modal = new EditQueryModal(plugin.app, query, (query) => {
+			addOrRemoveQueryCommand(plugin, query);
+			queries = queries;
+			saveQueries(queries);
+		});
 		modal.open();
-		
+
 		queries = queries;
 		saveQueries(queries);
-	}
+	};
 
 	const toggleCommandForQuery = (e: any) => {
 		const query: RandomNoteQuery = e.detail.query;
@@ -43,8 +41,8 @@
 		queries = queries;
 		addOrRemoveQueryCommand(plugin, query);
 		saveQueries(queries);
-	}
-	
+	};
+
 	const duplicateQuery = (e: any) => {
 		const query: RandomNoteQuery = e.detail.query;
 		const queryClone = structuredClone(query);
@@ -55,7 +53,7 @@
 		if (query.createCommand) {
 			plugin.addQueryCommand(query);
 		}
-	}
+	};
 
 	const handleSubmit = () => {
 		if (queryFormName.trim() === "") return;
@@ -63,7 +61,7 @@
 		queries = [...queries, createQuery(queryFormName, "")];
 		queryFormName = "";
 		saveQueries(queries);
-	}
+	};
 </script>
 
 <div class="query-list-view">
