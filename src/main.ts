@@ -1,8 +1,8 @@
-import { Notice, Plugin, TFile } from "obsidian";
+import { Plugin, TFile } from "obsidian";
 import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
-import type { RandomNoteQuery } from "./types";
+import type { Query } from "./types";
 import {
 	deleteObsidianCommand,
 	getPluginCommandId,
@@ -93,12 +93,12 @@ export default class AdvancedRandomNote extends Plugin {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
-			async (query: RandomNoteQuery) => this.executeQuery(query)
+			async (query: Query) => this.executeQuery(query)
 		);
 		modal.open();
 	}
 
-	async executeQuery(query: RandomNoteQuery) {
+	async executeQuery(query: Query) {
 		const files = await new Search(this).search(query);
 
 		if (files.length <= 0) {
@@ -114,7 +114,7 @@ export default class AdvancedRandomNote extends Plugin {
 		);
 	}
 
-	addQueryCommand(query: RandomNoteQuery) {
+	addQueryCommand(query: Query) {
 		this.addCommand({
 			id: query.id,
 			name: query.name,
@@ -122,7 +122,7 @@ export default class AdvancedRandomNote extends Plugin {
 		});
 	}
 
-	removeQueryCommand(query: RandomNoteQuery) {
+	removeQueryCommand(query: Query) {
 		deleteObsidianCommand(
 			this.app,
 			getPluginCommandId(query.id, this.manifest)

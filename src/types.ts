@@ -3,25 +3,20 @@ import { TFile } from "obsidian";
 export const QUERY_TYPES = ["Default", "Dataview", "Regex"] as const;
 export type QueryType = (typeof QUERY_TYPES)[number];
 
-export interface RandomNoteQuery {
+export interface Query {
 	id: string;
 	name: string;
 	query: string;
 	type: QueryType;
 	createCommand: boolean;
+	useExcludedFolders: boolean;
 }
 
-export interface ProcessedNormalQuery {
+export interface ProcessedDefaultQuery {
 	path: string;
 	file: string;
 	tags: SearchTag[];
 }
-
-export interface ProcessedDataviewQuery {
-	query: string;
-}
-
-export type ProcessedQuery = ProcessedNormalQuery | ProcessedDataviewQuery;
 
 export interface SearchTag {
 	included: boolean;

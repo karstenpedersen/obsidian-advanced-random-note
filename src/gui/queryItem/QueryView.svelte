@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { RandomNoteQuery } from "src/types";
+	import { Query } from "src/types";
 	import QueryList from "./QueryList.svelte";
 	import {
 		createQuery,
@@ -10,19 +10,19 @@
 	import AdvancedRandomNote from "src/main";
 
 	export let plugin: AdvancedRandomNote;
-	export let queries: RandomNoteQuery[];
-	export let saveQueries: (queries: RandomNoteQuery[]) => void;
+	export let queries: Query[];
+	export let saveQueries: (queries: Query[]) => void;
 	let queryFormName = "";
 
 	const deleteQuery = (e: any) => {
-		const query: RandomNoteQuery = e.detail.query;
+		const query: Query = e.detail.query;
 		queries = queries.filter((q) => q.id !== query.id);
 		plugin.removeQueryCommand(query);
 		saveQueries(queries);
 	};
 
 	const editQuery = (e: any) => {
-		const query: RandomNoteQuery = e.detail.query;
+		const query: Query = e.detail.query;
 
 		const modal = new EditQueryModal(plugin.app, query, (query) => {
 			addOrRemoveQueryCommand(plugin, query);
@@ -36,7 +36,7 @@
 	};
 
 	const toggleCommandForQuery = (e: any) => {
-		const query: RandomNoteQuery = e.detail.query;
+		const query: Query = e.detail.query;
 		query.createCommand = !query.createCommand;
 		queries = queries;
 		addOrRemoveQueryCommand(plugin, query);
@@ -44,7 +44,7 @@
 	};
 
 	const duplicateQuery = (e: any) => {
-		const query: RandomNoteQuery = e.detail.query;
+		const query: Query = e.detail.query;
 		const queryClone = structuredClone(query);
 		queryClone.id = getQueryCommandId();
 		queryClone.name = queryClone.name + " (Copy)";

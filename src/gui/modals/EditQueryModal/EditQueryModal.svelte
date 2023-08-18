@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
-	import { QUERY_TYPES, RandomNoteQuery } from "src/types";
+	import { QUERY_TYPES, Query } from "src/types";
 
-	export let query: RandomNoteQuery;
-	export let handleChange: (query: RandomNoteQuery) => void;
+	export let query: Query;
+	export let handleChange: (query: Query) => void;
 
 	const emitHandleChange = () => {
 		handleChange(query);
@@ -38,6 +38,32 @@
 					type="checkbox"
 					tabindex="0"
 					bind:checked={query.createCommand}
+				/>
+			</div>
+		</div>
+	</div>
+
+	<!-- Use exluded folders -->
+	<div class="setting-item mod-toggle">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Use excluded folders</div>
+			<div class="setting-item-description">
+				Use excluded folders from settings.
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<div
+				class="checkbox-container"
+				class:is-enabled={query.useExcludedFolders}
+				on:click={() => {
+					query.useExcludedFolders = !query.useExcludedFolders;
+					emitHandleChange();
+				}}
+			>
+				<input
+					type="checkbox"
+					tabindex="0"
+					bind:checked={query.useExcludedFolders}
 				/>
 			</div>
 		</div>

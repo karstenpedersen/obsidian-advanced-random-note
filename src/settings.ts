@@ -1,11 +1,11 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import AdvancedRandomNote from "./main";
-import type { RandomNoteQuery } from "./types";
+import type { Query } from "./types";
 import QueryView from "src/gui/queryItem/QueryView.svelte";
 
 export interface Settings {
 	openInNewLeaf: boolean;
-	queries: Array<RandomNoteQuery>;
+	queries: Array<Query>;
 	disabledFolders: string;
 	debug: boolean;
 }
@@ -54,7 +54,7 @@ export class SettingTab extends PluginSettingTab {
 				text.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.disabledFolders)
 					.onChange((value) => {
-						this.plugin.settings.disabledFolders = value;
+						this.plugin.settings.disabledFolders = value.trim();
 						this.plugin.saveSettings();
 					});
 			});
@@ -76,7 +76,7 @@ export class SettingTab extends PluginSettingTab {
 			props: {
 				plugin: this.plugin,
 				queries: this.plugin.settings.queries,
-				saveQueries: (queries: RandomNoteQuery[]) => {
+				saveQueries: (queries: Query[]) => {
 					this.plugin.settings.queries = queries;
 					this.plugin.saveSettings();
 				},

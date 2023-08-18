@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { RandomNoteQuery } from "src/types";
+	import { Query } from "src/types";
 	import QueryItem from "./QueryItem.svelte";
 
-	export let queries: RandomNoteQuery[];
+	export let queries: Query[];
 </script>
 
 <div class="query-list">

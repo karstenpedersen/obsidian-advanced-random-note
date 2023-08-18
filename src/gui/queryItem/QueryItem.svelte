@@ -7,10 +7,10 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import { Icon } from "svelte-awesome";
 	import { Component, MarkdownRenderer, htmlToMarkdown } from "obsidian";
-	import { RandomNoteQuery } from "src/types";
+	import { Query } from "src/types";
 	import { createEventDispatcher } from "svelte";
 
-	export let query: RandomNoteQuery;
+	export let query: Query;
 	const dispatch = createEventDispatcher();
 
 	const deleteQuery = () => {

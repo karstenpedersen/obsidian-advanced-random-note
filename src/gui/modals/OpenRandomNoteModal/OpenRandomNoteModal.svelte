@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { RandomNoteQuery } from "src/types";
+	import { Query } from "src/types";
 
-	export let queries: RandomNoteQuery[];
-	export let handleSubmit: (query: RandomNoteQuery) => void;
-	let selectedQuery: RandomNoteQuery;
+	export let queries: Query[];
+	export let handleSubmit: (query: Query) => void;
+	let selectedQuery: Query;
 
 	const handleFormSubmit = () => {
 		handleSubmit(selectedQuery);

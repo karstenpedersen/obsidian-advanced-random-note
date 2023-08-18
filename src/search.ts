@@ -2,9 +2,8 @@ import { Notice, TAbstractFile, TFile } from "obsidian";
 import { getAPI } from "obsidian-dataview";
 import AdvancedRandomNote from "./main";
 import type {
-	ProcessedNormalQuery,
-	ProcessedQuery,
-	RandomNoteQuery,
+	ProcessedDefaultQuery,
+	Query,
 	RandomNoteResult,
 	SearchTag,
 } from "./types";
@@ -17,12 +16,12 @@ export class Search {
 		this.plugin = plugin;
 	}
 
-	async search(query: RandomNoteQuery): Promise<RandomNoteResult> {
+	async search(query: Query): Promise<RandomNoteResult> {
 		// Find files that match query
 		let result: TFile[] = [];
 		if (query.type === "Dataview") {
 			const api = getAPI();
-
+			console.log("Dataview");
 			if (!api) {
 				new Notice(
 					"Advanced Random Note: Dataview API could not be found, is Dataview installed?"
@@ -32,7 +31,7 @@ export class Search {
 
 			const dataviewResult = await api?.query(query.query);
 
-			if (!dataviewResult?.successful) {
+			if (!dataviewResult || !dataviewResult?.successful) {
 				new Notice(
 					"Advanced Random Note: Error running dataview query"
 				);
@@ -66,18 +65,20 @@ export class Search {
 		}
 
 		// Filter disabled folder
-		result = result.filter((file) => !this.isInDisabledFolder(file));
+		if (query.useExcludedFolders) {
+			result = result.filter((file) => !this.isInDisabledFolder(file));
 
-		if (result.length < 0) {
-			new Notice(
-				"Advanced Random Note: Found zero notes matching your query."
-			);
+			if (result.length <= 0) {
+				new Notice(
+					"Advanced Random Note: Found zero notes matching your query."
+				);
+			}
 		}
 
 		return result;
 	}
 
-	processNormalQuery(query: RandomNoteQuery): ProcessedNormalQuery {
+	processQuery(query: Query): ProcessedDefaultQuery {
 		const regexResult = {
 			path: /path:(.*?)(tag:|file:|$)/.exec(query.query),
 			file: /file:(.*?)(tag:|path:|$)/.exec(query.query),
@@ -97,7 +98,7 @@ export class Search {
 			};
 		});
 
-		const processedQuery: ProcessedQuery = {
+		const processedQuery: ProcessedDefaultQuery = {
 			path,
 			file,
 			tags,
@@ -106,9 +107,9 @@ export class Search {
 		return processedQuery;
 	}
 
-	checkFileToMatchQuery(file: TFile, query: RandomNoteQuery) {
+	checkFileToMatchQuery(file: TFile, query: Query) {
 		// Process query
-		const processedQuery = this.processNormalQuery(query);
+		const processedQuery = this.processQuery(query);
 		return (
 			this.checkTagsWithFile(processedQuery.tags, file) &&
 			this.checkFilenameWithFile(processedQuery.file, file) &&
@@ -185,6 +186,8 @@ export class Search {
 	}
 
 	isInDisabledFolder(file: TAbstractFile): boolean {
+		if (this.plugin.settings.disabledFolders === "") return false;
+
 		return this.plugin.settings.disabledFolders
 			.split(/\r?\n/)
 			.every((disabledFolder) =>

@@ -1,7 +1,7 @@
 import { App, TFile, type PluginManifest } from "obsidian";
 import { v4 as uuidv4 } from "uuid";
 import AdvancedRandomNote from "./main";
-import type { RandomNoteQuery } from "./types";
+import type { Query } from "./types";
 
 export function moveElementInArray<T>(
 	arr: T[],
@@ -23,7 +23,7 @@ export function getRandomElement<T>(arr: T[]): T {
 
 export function addOrRemoveQueryCommand(
 	plugin: AdvancedRandomNote,
-	query: RandomNoteQuery
+	query: Query
 ) {
 	if (query.createCommand) {
 		plugin.addQueryCommand(query);
@@ -73,13 +73,14 @@ export function getQueryCommandId() {
 	return "query:" + uuidv4();
 }
 
-export function createQuery(name: string, query: string): RandomNoteQuery {
+export function createQuery(name: string, query: string): Query {
 	return {
 		id: getQueryCommandId(),
 		name,
 		query,
 		type: "Default",
 		createCommand: false,
+		useExcludedFolders: true,
 	};
 }
 

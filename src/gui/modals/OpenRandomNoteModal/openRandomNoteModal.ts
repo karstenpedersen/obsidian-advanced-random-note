@@ -1,17 +1,16 @@
 import { App, Modal } from "obsidian";
 import Component from "./OpenRandomNoteModal.svelte";
-import { RandomNoteQuery } from "src/types";
+import { Query } from "src/types";
 
 export class RandomNoteModal extends Modal {
 	view: Component;
-	queries: RandomNoteQuery[];
-	submitCallback: ((query: RandomNoteQuery) => Promise<void>) | undefined =
-		undefined;
+	queries: Query[];
+	submitCallback: ((query: Query) => Promise<void>) | undefined = undefined;
 
 	constructor(
 		app: App,
-		queries: RandomNoteQuery[],
-		submitCallback: (query: RandomNoteQuery) => Promise<void>
+		queries: Query[],
+		submitCallback: (query: Query) => Promise<void>
 	) {
 		super(app);
 		this.queries = queries;
@@ -22,7 +21,7 @@ export class RandomNoteModal extends Modal {
 		this.submitCallback = submitCallback;
 	}
 
-	handleSubmit = (query: RandomNoteQuery): void => {
+	handleSubmit = (query: Query): void => {
 		if (this.submitCallback) {
 			this.submitCallback(query);
 		}
