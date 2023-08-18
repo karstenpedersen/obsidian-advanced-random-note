@@ -1,22 +1,23 @@
 # Advanced Random Note Obsidian Plugin
 
-This plugin enables you to create custom queries for opening random notes.  This can be done through its own query language, [Dataview](https://github.com/blacksmithgu/obsidian-dataview), and/or [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+This plugin enables you to create custom queries for opening random notes. This can be done through its own query language, [Dataview](https://github.com/blacksmithgu/obsidian-dataview), and/or [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
 ## Features
 
--	Find random files using custom queries
+-   Find random files using custom queries
 -   Customize queryes through a custom modal
 -   Enable queries as commands to execute them with ease.
 -   Disable folders from being included in the searches.
 -   Choose if notes should open in new tabs.
 -   Commands:
-	-   Open random note modal: Open modal to select a query.
-	-   Open random note: Open random note (only markdown files).
-	-   Open random file: Open random file (all file types).
+    -   Open random note modal: Open modal to select a query.
+    -   Open random note: Open random note (only markdown files).
+    -   Open random file: Open random file (all file types).
 
 ### Settings Tab
 
-![Settings Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/settings-screenshot.png)
+![Settings Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/images/settings-screenshot.png)
+![Query Edit Modal Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/images/images/query-edit-modal-screenshot.png)
 
 ## Installation
 
@@ -35,6 +36,7 @@ This plugin enables you to create custom queries for opening random notes.  This
 ### Queries
 
 This plugin uses three different query languages:
+
 1. Custom language inspired by [Obsidian Search](https://help.obsidian.md/Plugins/Search).
 2. [Dataview](https://github.com/blacksmithgu/obsidian-dataview)
 3. [Regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
@@ -58,9 +60,9 @@ You can query files by their filename. To do this, specify the `file:` keyword a
 
 ##### Examples
 
-- Find ideas that are not completed: `tag: idea !complete`
-- Find untitled files: `file: Untitled`.
-- Find fleeting notes in root directory: `path: / tag: fleeting`.
+-   Find ideas that are not completed: `tag: idea !complete`
+-   Find untitled files: `file: Untitled`.
+-   Find fleeting notes in root directory: `path: / tag: fleeting`.
 
 #### Dataview
 
@@ -79,7 +81,7 @@ Another query type is regular expressions
 
 ##### Examples
 
-- Find image from attachments: `^attachments\/.*?[.](png|jpg)`
+-   Find image from attachments: `^attachments\/.*?[.](png|jpg)`
 
 ### Disabled Folders
 
@@ -95,16 +97,16 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 
 ### Version 0.0.8
 
--	Add custom query editor modal.
--	Add query types:
-	-	Search using Dataview.
-	- 	Search using regular expressions.
--	Add queries will now also search for other filetypes.
--	Fix root folder query in custom query language.
+-   Add custom query editor modal.
+-   Add query types:
+    -   Search using Dataview.
+    -         Search using regular expressions.
+-   Add queries will now also search for other filetypes.
+-   Fix root folder query in custom query language.
 
 ### Version 0.0.7
 
--	Fix frontmatter tags to also be included in queries.
+-   Fix frontmatter tags to also be included in queries.
 
 ### Version 0.0.6
 
