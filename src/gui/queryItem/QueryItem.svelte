@@ -6,7 +6,6 @@
 		faBolt,
 	} from "@fortawesome/free-solid-svg-icons";
 	import { Icon } from "svelte-awesome";
-	import { Component, MarkdownRenderer, htmlToMarkdown } from "obsidian";
 	import { Query } from "src/types";
 	import { createEventDispatcher } from "svelte";
 
@@ -29,45 +28,36 @@
 		dispatch("toggleCommandForQuery", { query });
 	};
 
-	const component = new Component();
-	let nameElement: HTMLSpanElement;
-
-	$: {
-		if (nameElement) {
-			nameElement.innerHTML = "";
-			const nameHTML = htmlToMarkdown(query.name);
-			MarkdownRenderer.renderMarkdown(
-				nameHTML,
-				nameElement,
-				"/",
-				component
-			);
-		}
-	}
+	const handleChange = () => {
+		dispatch("saveChanges", { query });
+	};
 </script>
 
 <div class="query-item">
 	<!-- Name -->
-	<span class="query-item__name" bind:this={nameElement} />
+	<button class="query-item__name" on:click={editQuery}>
+		{query.name}
+	</button>
 
 	<!-- Options -->
 	<div class="query-item__options">
 		<button
+			class="query-item__option"
 			class:active={query.createCommand}
 			on:click={toggleCommandForQuery}
 		>
 			<Icon data={faBolt} />
 		</button>
 
-		<button on:click={editQuery}>
+		<button class="query-item__option" on:click={editQuery}>
 			<Icon data={faCog} />
 		</button>
 
-		<button on:click={duplicateQuery}>
+		<button class="query-item__option" on:click={duplicateQuery}>
 			<Icon data={faClone} />
 		</button>
 
-		<button on:click={deleteQuery}>
+		<button class="query-item__option" on:click={deleteQuery}>
 			<Icon data={faTrash} />
 		</button>
 	</div>
@@ -81,15 +71,22 @@
 		height: max-content;
 	}
 
+	.query-item__name {
+		margin: 0;
+	}
+
 	.query-item__options {
 		display: flex;
 		gap: 0.125rem;
 		align-items: center;
 	}
 
+	.query-item__option {
+		aspect-ratio: 1 / 1;
+	}
+
 	button {
 		background: transparent;
-		aspect-ratio: 1 / 1;
 		padding: 0;
 		border: none;
 		box-shadow: none;

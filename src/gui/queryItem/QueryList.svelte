@@ -13,6 +13,7 @@
 			on:deleteQuery
 			on:duplicateQuery
 			on:toggleCommandForQuery
+			on:saveChanges
 		/>
 	{:else}
 		<p>Create a query</p>

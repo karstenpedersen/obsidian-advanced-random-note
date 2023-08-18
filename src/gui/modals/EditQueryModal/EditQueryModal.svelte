@@ -14,7 +14,15 @@
 	});
 </script>
 
-<h2 class="title">{query.name}</h2>
+<h2 class="title">
+	<input
+		class="title__input"
+		type="text"
+		placeholder="Query name"
+		bind:value={query.name}
+		on:input={emitHandleChange}
+	/>
+</h2>
 
 <div class="content">
 	<!-- Create command -->
@@ -46,24 +54,24 @@
 	<!-- Use exluded folders -->
 	<div class="setting-item mod-toggle">
 		<div class="setting-item-info">
-			<div class="setting-item-name">Use excluded folders</div>
+			<div class="setting-item-name">Use disabled folders</div>
 			<div class="setting-item-description">
-				Use excluded folders from settings.
+				Use disabled folders from settings.
 			</div>
 		</div>
 		<div class="setting-item-control">
 			<div
 				class="checkbox-container"
-				class:is-enabled={query.useExcludedFolders}
+				class:is-enabled={query.useDisabledFolders}
 				on:click={() => {
-					query.useExcludedFolders = !query.useExcludedFolders;
+					query.useDisabledFolders = !query.useDisabledFolders;
 					emitHandleChange();
 				}}
 			>
 				<input
 					type="checkbox"
 					tabindex="0"
-					bind:checked={query.useExcludedFolders}
+					bind:checked={query.useDisabledFolders}
 				/>
 			</div>
 		</div>
@@ -103,6 +111,15 @@
 <style>
 	.title {
 		text-align: center;
+	}
+
+	.title__input {
+		text-align: center;
+		background: transparent;
+		padding: 0;
+		border: none;
+		font-size: var(--h2-size);
+		width: 100%;
 	}
 
 	.content {

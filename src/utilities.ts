@@ -80,7 +80,7 @@ export function createQuery(name: string, query: string): Query {
 		query,
 		type: "Default",
 		createCommand: false,
-		useExcludedFolders: true,
+		useDisabledFolders: true,
 	};
 }
 

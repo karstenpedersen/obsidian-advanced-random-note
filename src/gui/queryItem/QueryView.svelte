@@ -62,6 +62,11 @@
 		queryFormName = "";
 		saveQueries(queries);
 	};
+
+	const saveChanges = () => {
+		queries = queries;
+		saveQueries(queries);
+	};
 </script>
 
 <div class="query-list-view">
@@ -72,6 +77,7 @@
 		on:editQuery={editQuery}
 		on:toggleCommandForQuery={toggleCommandForQuery}
 		on:duplicateQuery={duplicateQuery}
+		on:saveChanges={saveChanges}
 	/>
 
 	<!-- Create query form -->

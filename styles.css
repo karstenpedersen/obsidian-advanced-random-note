@@ -10,7 +10,3 @@ If your plugin does not need CSS, delete this file.
 .arn-input {
 	width: 100%;
 }
-
-.query-item__name > p {
-	margin: 0;
-}

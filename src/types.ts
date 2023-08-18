@@ -9,7 +9,7 @@ export interface Query {
 	query: string;
 	type: QueryType;
 	createCommand: boolean;
-	useExcludedFolders: boolean;
+	useDisabledFolders: boolean;
 }
 
 export interface ProcessedDefaultQuery {
