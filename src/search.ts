@@ -65,7 +65,7 @@ export class Search {
 		}
 
 		// Filter disabled folder
-		if (query.useExcludedFolders) {
+		if (query.useDisabledFolders) {
 			result = result.filter((file) => !this.isInDisabledFolder(file));
 
 			if (result.length <= 0) {
