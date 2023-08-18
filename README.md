@@ -17,7 +17,7 @@ This plugin enables you to create custom queries for opening random notes. This 
 ### Settings Tab
 
 ![Settings Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/images/settings-screenshot.png)
-![Query Edit Modal Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/images/images/query-edit-modal-screenshot.png)
+![Query Edit Modal Image](https://raw.githubusercontent.com/karstenpedersen/obsidian-advanced-random-note/master/images/query-edit-modal-screenshot.png)
 
 ## Installation
 
@@ -100,7 +100,7 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 -   Add custom query editor modal.
 -   Add query types:
     -   Search using Dataview.
-    -         Search using regular expressions.
+    -               Search using regular expressions.
 -   Add queries will now also search for other filetypes.
 -   Fix root folder query in custom query language.
 
