@@ -1,8 +1,8 @@
-import { Notice, Plugin, TFile } from "obsidian";
-import { RandomNoteModal } from "./openRandomNoteModal";
+import { Plugin, TFile } from "obsidian";
+import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
-import type { RandomNoteQuery } from "./types";
+import type { Query } from "./types";
 import {
 	deleteObsidianCommand,
 	getPluginCommandId,
@@ -18,9 +18,9 @@ export default class AdvancedRandomNote extends Plugin {
 
 		// Add random note modal command
 		this.addCommand({
-			id: "open-random-note-modal",
-			name: "Open random note modal",
-			callback: () => this.handleOpenRandomNoteModal(),
+			id: "open-query-modal",
+			name: "Open query modal",
+			callback: () => this.handleopenRandomFileModal(),
 		});
 
 		// Open generic random note
@@ -28,7 +28,16 @@ export default class AdvancedRandomNote extends Plugin {
 			id: "open-random-note",
 			name: "Open random note",
 			callback: () => {
-				this.handleOpenRandomNote();
+				this.openRandomMarkdownFile();
+			},
+		});
+
+		// Open generic random note
+		this.addCommand({
+			id: "open-random-file",
+			name: "Open random file",
+			callback: () => {
+				this.openRandomVaultFile();
 			},
 		});
 
@@ -55,18 +64,11 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async openNote(file: TFile) {
-		await this.app.workspace.openLinkText(
-			file.basename,
-			"",
-			this.settings.openInNewLeaf,
-			{
-				active: true,
-			}
-		);
+	async openFile(file: TFile) {
+		this.app.workspace.getLeaf().openFile(file);
 	}
 
-	async openRandomNote(files: TFile[]) {
+	async openRandomFile(files: TFile[]) {
 		// Get random note from files
 		const file = getRandomElement(files);
 
@@ -76,51 +78,51 @@ export default class AdvancedRandomNote extends Plugin {
 		}
 
 		// Open file
-		await this.openNote(file);
+		await this.openFile(file);
 	}
 
-	async handleOpenRandomNote() {
-		await this.openRandomNote(this.app.vault.getMarkdownFiles());
+	async openRandomMarkdownFile() {
+		await this.openRandomFile(this.app.vault.getMarkdownFiles());
 	}
 
-	handleOpenRandomNoteModal() {
+	async openRandomVaultFile() {
+		await this.openRandomFile(this.app.vault.getFiles());
+	}
+
+	handleopenRandomFileModal() {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
-			async (query: RandomNoteQuery) => this.executeRandomNoteQuery(query)
+			async (query: Query) => this.executeQuery(query)
 		);
 		modal.open();
 	}
 
-	async executeRandomNoteQuery(query: RandomNoteQuery) {
-		const files = new Search(this).search(query);
+	async executeQuery(query: Query) {
+		const files = await new Search(this).search(query);
 
 		if (files.length <= 0) {
-			new Notice(
-				"Advanced Random Note: Found zero notes matching your query."
-			);
 			return;
 		}
 
-		await this.openRandomNote(files);
+		await this.openRandomFile(files);
 	}
 
 	addQueryCommands() {
-		// Add query commands
 		this.settings.queries.forEach(
 			(query) => query.createCommand && this.addQueryCommand(query)
 		);
 	}
 
-	addQueryCommand(query: RandomNoteQuery) {
+	addQueryCommand(query: Query) {
 		this.addCommand({
 			id: query.id,
 			name: query.name,
-			callback: async () => this.executeRandomNoteQuery(query),
+			callback: async () => this.executeQuery(query),
 		});
 	}
 
-	removeQueryCommand(query: RandomNoteQuery) {
+	removeQueryCommand(query: Query) {
 		deleteObsidianCommand(
 			this.app,
 			getPluginCommandId(query.id, this.manifest)

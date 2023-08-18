@@ -1,11 +1,11 @@
-import { App, ButtonComponent, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import AdvancedRandomNote from "./main";
-import type { RandomNoteQuery } from "./types";
-import { createQuery, moveElementInArray } from "./utilities";
+import type { Query } from "./types";
+import QueryView from "src/gui/queryItem/QueryView.svelte";
 
 export interface Settings {
 	openInNewLeaf: boolean;
-	queries: Array<RandomNoteQuery>;
+	queries: Array<Query>;
 	disabledFolders: string;
 	debug: boolean;
 }
@@ -26,10 +26,14 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const { containerEl } = this;
+		this.containerEl.empty();
+		this.addSetting();
+		this.addQueriesSetting();
+		this.addDebugSetting();
+	}
 
-		containerEl.empty();
-
+	addSetting() {
+		// Open in new leaf setting
 		new Setting(this.containerEl)
 			.setName("Open in new leaf")
 			.setDesc("Opens random notes in new tabs")
@@ -42,6 +46,7 @@ export class SettingTab extends PluginSettingTab {
 					})
 			);
 
+		// Disabled folders setting
 		new Setting(this.containerEl)
 			.setName("Disabled folders")
 			.setDesc("Skips these folders when searching for files")
@@ -49,129 +54,44 @@ export class SettingTab extends PluginSettingTab {
 				text.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.disabledFolders)
 					.onChange((value) => {
-						this.plugin.settings.disabledFolders = value;
+						this.plugin.settings.disabledFolders = value.trim();
 						this.plugin.saveSettings();
 					});
 			});
+	}
 
-		new Setting(this.containerEl)
-			.setName("Search queries")
-			.setDesc("Add search queries")
-			.addButton((button: ButtonComponent) => {
-				button
-					.setTooltip("Add additional query")
-					.setButtonText("+")
-					.setCta()
-					.onClick(() => {
-						const query = createQuery("Untitled", "");
-						this.plugin.settings.queries.push(query);
-						this.plugin.saveSettings();
-						this.display();
-					});
-			});
-
-		this.plugin.settings.queries.forEach((query, index) => {
-			const s = new Setting(this.containerEl)
-				.addText((text) => {
-					text.setPlaceholder("Name")
-						.setValue(query.name)
-						.onChange(async (value) => {
-							// Change query name
-							this.plugin.settings.queries[index].name =
-								value.trim();
-
-							// Remove query
-							this.plugin.addQueryCommand(
-								this.plugin.settings.queries[index]
-							);
-
-							await this.plugin.saveSettings();
-						});
-					text.inputEl.addClass("arn-input");
-				})
-				.addText((text) => {
-					text.setPlaceholder("Query")
-						.setValue(query.query)
-						.onChange(async (value) => {
-							// Change query
-							this.plugin.settings.queries[index].query =
-								value.trim();
-							await this.plugin.saveSettings();
-						});
-					text.inputEl.addClass("arn-input");
-				})
-				.addToggle((cb) => {
-					cb.setTooltip("Create command")
-						.setValue(
-							this.plugin.settings.queries[index].createCommand
-						)
-						.onChange((value) => {
-							// Update toggle value
-							this.plugin.settings.queries[index].createCommand =
-								value;
-
-							// Toggle query command
-							if (value) {
-								this.plugin.addQueryCommand(
-									this.plugin.settings.queries[index]
-								);
-							} else {
-								this.plugin.removeQueryCommand(
-									this.plugin.settings.queries[index]
-								);
-							}
-
-							this.plugin.saveSettings();
-						});
-				})
-				.addExtraButton((cb) => {
-					cb.setIcon("up-chevron-glyph")
-						.setTooltip("Move up")
-						.onClick(() => {
-							moveElementInArray(
-								this.plugin.settings.queries,
-								index,
-								index - 1
-							);
-							this.plugin.saveSettings();
-							this.display();
-						});
-				})
-				.addExtraButton((cb) => {
-					cb.setIcon("down-chevron-glyph")
-						.setTooltip("Move down")
-						.onClick(() => {
-							moveElementInArray(
-								this.plugin.settings.queries,
-								index,
-								index + 1
-							);
-							this.plugin.saveSettings();
-							this.display();
-						});
-				})
-				.addExtraButton((cb) => {
-					cb.setIcon("cross")
-						.setTooltip("Delete")
-						.onClick(() => {
-							// Remove query
-							this.plugin.removeQueryCommand(
-								this.plugin.settings.queries.splice(index, 1)[0]
-							);
-							this.plugin.saveSettings();
-							this.display();
-						});
-				});
-
-			s.infoEl.remove();
+	addQueriesSetting() {
+		// Title
+		this.containerEl.createEl("div", {
+			text: "Queries",
+			cls: "setting-item setting-item-heading",
 		});
 
-		// Debug settings
+		// Add query list
+		const setting = new Setting(this.containerEl);
+		setting.infoEl.remove();
+		setting.settingEl.style.display = "block";
+		new QueryView({
+			target: setting.settingEl,
+			props: {
+				plugin: this.plugin,
+				queries: this.plugin.settings.queries,
+				saveQueries: (queries: Query[]) => {
+					this.plugin.settings.queries = queries;
+					this.plugin.saveSettings();
+				},
+			},
+		});
+	}
+
+	addDebugSetting() {
+		// Title
 		this.containerEl.createEl("div", {
 			text: "Debug",
 			cls: "setting-item setting-item-heading",
 		});
 
+		// Toggle debug mode setting
 		new Setting(this.containerEl)
 			.setName("Debug Mode")
 			.setDesc("Toggle debug mode")

@@ -12,6 +12,7 @@
 	"author": "Karsten F. Pedersen",
 	"license": "MIT",
 	"devDependencies": {
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
 		"@tsconfig/svelte": "^5.0.0",
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
@@ -20,9 +21,14 @@
 		"esbuild": "0.17.3",
 		"esbuild-svelte": "^0.7.4",
 		"obsidian": "latest",
+		"obsidian-dataview": "^0.5.56",
 		"svelte": "^4.0.5",
+		"svelte-awesome": "^3.2.1",
 		"svelte-preprocess": "^5.0.4",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"uuid": "^9.0.0"
 	}
 }

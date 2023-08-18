@@ -1,8 +1,9 @@
-import { TFile } from "obsidian";
+import { Notice, TAbstractFile, TFile } from "obsidian";
+import { getAPI } from "obsidian-dataview";
 import AdvancedRandomNote from "./main";
 import type {
-	ProcessedQuery,
-	RandomNoteQuery,
+	ProcessedDefaultQuery,
+	Query,
 	RandomNoteResult,
 	SearchTag,
 } from "./types";
@@ -15,39 +16,79 @@ export class Search {
 		this.plugin = plugin;
 	}
 
-	search(query: RandomNoteQuery): RandomNoteResult {
-		// Get markdown files in vault
-		const files = this.plugin.app.vault.getMarkdownFiles();
+	async search(query: Query): Promise<RandomNoteResult> {
+		// Find files that match query
+		let result: TFile[] = [];
+		if (query.type === "Dataview") {
+			const api = getAPI();
+			console.log("Dataview");
+			if (!api) {
+				new Notice(
+					"Advanced Random Note: Dataview API could not be found, is Dataview installed?"
+				);
+				return [];
+			}
 
-		if (this.plugin.settings.debug) {
-			console.log("Searching for random note using the given query:");
-			console.log(query);
+			const dataviewResult = await api?.query(query.query);
+
+			if (!dataviewResult || !dataviewResult?.successful) {
+				new Notice(
+					"Advanced Random Note: Error running dataview query"
+				);
+				return [];
+			}
+
+			if (dataviewResult.value.type !== "list") {
+				new Notice(
+					"Advanced Random Note: Dataview query is not a list"
+				);
+				return [];
+			}
+
+			result = dataviewResult.value.values
+				.map((value) =>
+					this.plugin.app.vault.getAbstractFileByPath(value.path)
+				)
+				.filter((file) => file !== null && file instanceof TFile)
+				.map((file) => file as TFile);
+		} else {
+			const files = this.plugin.app.vault.getFiles();
+
+			if (query.type === "Regex") {
+				const regex = new RegExp(query.query);
+				result = files.filter((file) => regex.test(file.path));
+			} else {
+				result = files.filter((file) =>
+					this.checkFileToMatchQuery(file, query)
+				);
+			}
 		}
 
-		// Find files that match query
-		const result = files.filter((file) => {
-			return this.checkFileToMatchQuery(file, query);
-		});
+		// Filter disabled folder
+		if (query.useExcludedFolders) {
+			result = result.filter((file) => !this.isInDisabledFolder(file));
 
-		if (this.plugin.settings.debug) {
-			console.log("Found these files:");
-			console.log(result);
+			if (result.length <= 0) {
+				new Notice(
+					"Advanced Random Note: Found zero notes matching your query."
+				);
+			}
 		}
 
 		return result;
 	}
 
-	processQuery(query: RandomNoteQuery): ProcessedQuery {
+	processQuery(query: Query): ProcessedDefaultQuery {
 		const regexResult = {
-			path: /path:\s+(.*?)(tag:|file:|$)/.exec(query.query),
-			file: /file:\s+(.*?)(tag:|path:|$)/.exec(query.query),
-			tags: /tag:\s+(.*?)(file:|path:|$)/.exec(query.query),
+			path: /path:(.*?)(tag:|file:|$)/.exec(query.query),
+			file: /file:(.*?)(tag:|path:|$)/.exec(query.query),
+			tags: /tag:(.*?)(file:|path:|$)/.exec(query.query),
 		};
 
 		const path = regexResult.path ? regexResult.path[1].trim() : "";
 		const file = regexResult.file ? regexResult.file[1].trim() : "";
 		const tags: SearchTag[] = (
-			regexResult.tags ? regexResult.tags[1].split(" ") : []
+			regexResult.tags ? regexResult.tags[1].trim().split(" ") : []
 		).map((tag) => {
 			const trimmedTag = tag.trim();
 
@@ -57,7 +98,7 @@ export class Search {
 			};
 		});
 
-		const processedQuery: ProcessedQuery = {
+		const processedQuery: ProcessedDefaultQuery = {
 			path,
 			file,
 			tags,
@@ -66,11 +107,10 @@ export class Search {
 		return processedQuery;
 	}
 
-	checkFileToMatchQuery(file: TFile, query: RandomNoteQuery) {
+	checkFileToMatchQuery(file: TFile, query: Query) {
 		// Process query
 		const processedQuery = this.processQuery(query);
 		return (
-			this.checkDisabledFolderPath(processedQuery.path, file) &&
 			this.checkTagsWithFile(processedQuery.tags, file) &&
 			this.checkFilenameWithFile(processedQuery.file, file) &&
 			this.checkPathWithFile(processedQuery.path, file)
@@ -78,25 +118,35 @@ export class Search {
 	}
 
 	checkTagsWithFile(tags: SearchTag[], file: TFile): boolean {
-		const fileCache = this.plugin.app.metadataCache.getFileCache(file)
-		
-		// Get file tags
-		const fileCacheTags = fileCache?.tags ?? [];
-		const frontmatterTags = fileCache?.frontmatter?.tags ?? []
-		const frontmatterTag = fileCache?.frontmatter?.tag
-		
-		let fileTags = fileCacheTags.map(fileTag => fileTag.tag)
-		fileTags = fileTags.concat(getTagStrings(frontmatterTags))
-		if (frontmatterTag) {
-			fileTags.push(getTagString(frontmatterTag))
+		if (tags.length <= 0) {
+			return true;
+		} else if (file.extension !== "md") {
+			return false;
 		}
 
+		const fileCache = this.plugin.app.metadataCache.getFileCache(file);
+
+		// Get file tags
+		const fileCacheTags = fileCache?.tags ?? [];
+		let frontmatterTags = fileCache?.frontmatter?.tags ?? [];
+		const frontmatterTag = fileCache?.frontmatter?.tag;
+
+		if (frontmatterTags[0] === null) frontmatterTags = [];
+
+		// Combine tags
+		let fileTags = fileCacheTags.map((tagCache) => tagCache.tag);
+		fileTags = fileTags.concat(getTagStrings(frontmatterTags));
+		if (frontmatterTag) {
+			fileTags.push(getTagString(frontmatterTag));
+		}
+
+		if (fileTags.length <= 0 && tags.length > 0) return false;
+
+		// Get excluded and included tags
 		const includedTags = tags.filter((tag) => tag.included);
 		const excludedTags = tags.filter((tag) => !tag.included);
 		let includesTags = false;
 		let excludesTags = false;
-		
-		console.log(tags)
 
 		// Check included tags
 		includesTags =
@@ -135,13 +185,13 @@ export class Search {
 		);
 	}
 
-	checkDisabledFolderPath(queryPath: string, file: TFile): boolean {
-		const filePath = file.path.replace(file.name, "");
-
-		if (filePath === queryPath) return true;
+	isInDisabledFolder(file: TAbstractFile): boolean {
+		if (this.plugin.settings.disabledFolders === "") return false;
 
 		return this.plugin.settings.disabledFolders
 			.split(/\r?\n/)
-			.every((disabledFolder) => disabledFolder.trim() !== filePath);
+			.every((disabledFolder) =>
+				file.path.startsWith(disabledFolder.trim())
+			);
 	}
 }

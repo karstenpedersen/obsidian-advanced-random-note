@@ -1,5 +1,7 @@
-import { App, moment, type PluginManifest } from "obsidian";
-import type { RandomNoteQuery } from "./types";
+import { App, TFile, type PluginManifest } from "obsidian";
+import { v4 as uuidv4 } from "uuid";
+import AdvancedRandomNote from "./main";
+import type { Query } from "./types";
 
 export function moveElementInArray<T>(
 	arr: T[],
@@ -17,6 +19,17 @@ export function moveElementInArray<T>(
 export function getRandomElement<T>(arr: T[]): T {
 	const index = Math.floor(Math.random() * arr.length);
 	return arr[index];
+}
+
+export function addOrRemoveQueryCommand(
+	plugin: AdvancedRandomNote,
+	query: Query
+) {
+	if (query.createCommand) {
+		plugin.addQueryCommand(query);
+	} else {
+		plugin.removeQueryCommand(query);
+	}
 }
 
 export function findObsidianCommand(app: App, commandId: string) {
@@ -53,22 +66,24 @@ export function getTagString(tag: string): string {
 }
 
 export function getTagStrings(tags: string[]): string[] {
-	return tags.map(tag => getTagString(tag))
-}
-
-export function getDateId() {
-	return moment(new Date()).format("YYYYMMDDHHmmss");
+	return tags.map((tag) => getTagString(tag));
 }
 
 export function getQueryCommandId() {
-	return "query:" + getDateId();
+	return "query:" + uuidv4();
 }
 
-export function createQuery(name: string, query: string): RandomNoteQuery {
+export function createQuery(name: string, query: string): Query {
 	return {
 		id: getQueryCommandId(),
 		name,
 		query,
+		type: "Default",
 		createCommand: false,
+		useExcludedFolders: true,
 	};
+}
+
+export function getFullPath(file: TFile): string {
+	return file.path + "/" + file.name + "." + file.path;
 }
