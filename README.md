@@ -1,19 +1,18 @@
 # Advanced Random Note Obsidian Plugin
 
-This plugin enables you to create custom queries for opening random notes.
+This plugin enables you to create custom queries for opening random notes.  This can be done through its own query language, [Dataview](https://github.com/blacksmithgu/obsidian-dataview), and/or [regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 
 ## Features
 
--   Create custom queries on the plugins settings tab.
-    -	Find random files using custom query language inspired by Obsidian Search.
-    -	Find random files using Dataview list queries.
-    -   Find random files using regular expression.
-    -   Enable them as commands.
--   Open random note modal: Open modal to select a query.
--   Open random note: Open random note (only markdown files).
--   Open random file: Open random file (all file types).
+-	Find random files using custom queries
+-   Customize queryes through a custom modal
+-   Enable queries as commands to execute them with ease.
 -   Disable folders from being included in the searches.
 -   Choose if notes should open in new tabs.
+-   Commands:
+	-   Open random note modal: Open modal to select a query.
+	-   Open random note: Open random note (only markdown files).
+	-   Open random file: Open random file (all file types).
 
 ### Settings Tab
 
@@ -40,8 +39,6 @@ This plugin uses three different query languages:
 2. [Dataview](https://github.com/blacksmithgu/obsidian-dataview)
 3. [Regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
 
-This plugin queries markdown notes using syntax similar to the [Obsidian Search](https://help.obsidian.md/Plugins/Search) plugin but is more primitive.
-
 #### Custom query language
 
 ##### Tags
@@ -59,37 +56,40 @@ You can query files by their path. To do this, specify the `path:` keyword and w
 
 You can query files by their filename. To do this, specify the `file:` keyword and write what the filename should contain to be included in the result.
 
+##### Examples
+
+- Find ideas that are not completed: `tag: idea !complete`
+- Find untitled files: `file: Untitled`.
+- Find fleeting notes in root directory: `path: / tag: fleeting`.
+
 #### Dataview
 
-Search 
+Install and enable [Dataview](https://github.com/blacksmithgu/obsidian-dataview) through community plugins and reload Obsidian. You can find more information about Dataview queries in their [documentation](https://blacksmithgu.github.io/obsidian-dataview/queries/structure/).
+
+Note: This plugin only allows for list queries, like this one:
+
+```
+LIST
+FROM #idea
+```
+
+#### Regular Expressions
+
+Another query type is regular expressions
+
+##### Examples
+
+- Find image from attachments: `^attachments\/.*?[.](png|jpg)`
 
 ### Disabled Folders
 
 You can disable folders to remove them from being searched. This can be useful if you have a template folder that you do not want to open files from.
 
+Note: Queries can disable the use of this setting, meaning that you can create some queries which searches from them.
+
 ### Enable Queries as Commands
 
 Queries can be enabled as commands by clicking the toggle next to them when on the plugins settings tab. This can be useful in combination with the [Commander](https://github.com/phibr0/obsidian-commander) plugin.
-
-## Examples
-
-### Find Ideas in your Vault
-
-Find a random incomplete idea.
-
--   Query: `tag: idea !complete`.
-
-### Find Untitled Files
-
-Find an untitled note.
-
--   Query: `file: Untitled`.
-
-### Find a Fleeting Note in the root Directory
-
-You can combine keywords.
-
--   Query: `path: / tag: fleeting`.
 
 ## Version History
 
