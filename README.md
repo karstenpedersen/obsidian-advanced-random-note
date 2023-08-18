@@ -100,7 +100,7 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 -   Add custom query editor modal.
 -   Add query types:
     -   Search using Dataview.
-    -               Search using regular expressions.
+    -   Search using regular expressions.
 -   Add queries will now also search for other filetypes.
 -   Fix root folder query in custom query language.
 
