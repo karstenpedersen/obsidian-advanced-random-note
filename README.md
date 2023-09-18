@@ -98,6 +98,7 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 ### Version 0.0.9
 
 -   Fix disabled folders.
+-   Fix open file in new leaf setting.
 
 ### Version 0.0.8
 
