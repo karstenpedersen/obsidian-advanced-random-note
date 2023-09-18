@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
+import QueryView from "src/gui/queryItem/QueryView.svelte";
 import AdvancedRandomNote from "./main";
 import type { Query } from "./types";
-import QueryView from "src/gui/queryItem/QueryView.svelte";
 
 export interface Settings {
 	openInNewLeaf: boolean;
@@ -82,26 +82,5 @@ export class SettingTab extends PluginSettingTab {
 				},
 			},
 		});
-	}
-
-	addDebugSetting() {
-		// Title
-		this.containerEl.createEl("div", {
-			text: "Debug",
-			cls: "setting-item setting-item-heading",
-		});
-
-		// Toggle debug mode setting
-		new Setting(this.containerEl)
-			.setName("Debug Mode")
-			.setDesc("Toggle debug mode")
-			.addToggle((text) =>
-				text
-					.setValue(this.plugin.settings.debug)
-					.onChange(async (value) => {
-						this.plugin.settings.debug = value;
-						await this.plugin.saveSettings();
-					})
-			);
 	}
 }
