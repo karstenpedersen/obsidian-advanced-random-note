@@ -1,13 +1,13 @@
 <script lang="ts">
 	import {
-		faClone,
-		faTrash,
-		faCog,
 		faBolt,
+		faClone,
+		faCog,
+		faTrash,
 	} from "@fortawesome/free-solid-svg-icons";
-	import { Icon } from "svelte-awesome";
 	import { Query } from "src/types";
 	import { createEventDispatcher } from "svelte";
+	import { Icon } from "svelte-awesome";
 
 	export let query: Query;
 	const dispatch = createEventDispatcher();
@@ -26,10 +26,6 @@
 
 	const toggleCommandForQuery = () => {
 		dispatch("toggleCommandForQuery", { query });
-	};
-
-	const handleChange = () => {
-		dispatch("saveChanges", { query });
 	};
 </script>
 

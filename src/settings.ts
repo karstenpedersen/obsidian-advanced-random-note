@@ -29,7 +29,6 @@ export class SettingTab extends PluginSettingTab {
 		this.containerEl.empty();
 		this.addSetting();
 		this.addQueriesSetting();
-		this.addDebugSetting();
 	}
 
 	addSetting() {

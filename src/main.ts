@@ -65,7 +65,14 @@ export default class AdvancedRandomNote extends Plugin {
 	}
 
 	async openFile(file: TFile) {
-		this.app.workspace.getLeaf().openFile(file);
+		await this.app.workspace.openLinkText(
+			file.basename,
+			"",
+			this.settings.openInNewLeaf,
+			{
+				active: true
+			}
+		);
 	}
 
 	async openRandomFile(files: TFile[]) {
