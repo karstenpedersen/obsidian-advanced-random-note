@@ -1,9 +1,34 @@
 <script lang="ts">
-	import { onDestroy } from "svelte";
 	import { QUERY_TYPES, Query } from "src/types";
+	import { onDestroy } from "svelte";
 
 	export let query: Query;
 	export let handleChange: (query: Query) => void;
+
+	let queryPlaceholder = "";
+	let queryDescription = "";
+	$: {
+		switch (query.type) {
+			case "Dataview":
+				queryDescription = "Only works for list queries."
+				queryPlaceholder = "LIST\n..."
+				break;
+			case "Regex":
+				queryDescription = ""
+				queryPlaceholder = "Regular Expression..."
+				break;
+			default:
+				queryDescription = ""
+				queryPlaceholder = "path: ... file: ... tag: ..."
+				break;
+		}
+
+		if (query.type === "Dataview") {
+			
+		} else if (query.type === "Default") {
+
+		}
+	}
 
 	const emitHandleChange = () => {
 		handleChange(query);
@@ -82,7 +107,7 @@
 		<div class="setting-item-info">
 			<div class="setting-item-name">Query type</div>
 			<div class="setting-item-description">
-				Use Dataview as query language.
+				Use Regex, Dataview, or the default.
 			</div>
 		</div>
 		<div class="setting-item-control">
@@ -99,11 +124,17 @@
 	</div>
 
 	<div class="content">
-		<span>Query:</span>
+		<div class="setting-item-info">
+			<div class="setting-item-name">Query</div>
+			<div class="setting-item-description">
+				{queryDescription}
+			</div>
+		</div>
 		<textarea
 			bind:value={query.query}
 			rows={12}
 			on:input={emitHandleChange}
+			placeholder={queryPlaceholder}
 		/>
 	</div>
 </div>
