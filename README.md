@@ -95,6 +95,10 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 
 ## Version History
 
+### Version 0.0.9
+
+-   Fix disabled folders.
+
 ### Version 0.0.8
 
 -   Add custom query editor modal.
