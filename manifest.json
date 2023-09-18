@@ -1,7 +1,7 @@
 {
 	"id": "advanced-random-note",
 	"name": "Advanced Random Note",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"minAppVersion": "0.15.0",
 	"description": "Create commands from custom queries to open random notes",
 	"author": "Karsten Finderup Pedersen",
