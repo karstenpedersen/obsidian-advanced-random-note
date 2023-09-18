@@ -190,7 +190,7 @@ export class Search {
 
 		return this.plugin.settings.disabledFolders
 			.split(/\r?\n/)
-			.every((disabledFolder) =>
+			.some((disabledFolder) =>
 				file.path.startsWith(disabledFolder.trim())
 			);
 	}
