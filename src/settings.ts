@@ -1,20 +1,23 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import QueryView from "src/gui/queryItem/QueryView.svelte";
 import AdvancedRandomNote from "./main";
-import type { Query } from "./types";
+import { type OpenType, type Query } from "./types";
+import { getOpenTypeLabels, toRecord } from "./utilities";
 
 export interface Settings {
-	openInNewLeaf: boolean;
 	queries: Array<Query>;
 	disabledFolders: string;
 	debug: boolean;
+	openType: OpenType;
+	setActive: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-	openInNewLeaf: false,
 	queries: [],
 	disabledFolders: "",
 	debug: false,
+	openType: "Active Leaf",
+	setActive: true,
 };
 
 export class SettingTab extends PluginSettingTab {
@@ -32,15 +35,29 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	addSetting() {
-		// Open in new leaf setting
+		// Make files active
 		new Setting(this.containerEl)
-			.setName("Open in new leaf")
-			.setDesc("Opens random notes in new tabs")
-			.addToggle((text) =>
-				text
-					.setValue(this.plugin.settings.openInNewLeaf)
+			.setName("Open files as active")
+			.setDesc("Make files active when they are opened.")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.setActive)
 					.onChange(async (value) => {
-						this.plugin.settings.openInNewLeaf = value;
+						this.plugin.settings.setActive = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		// Open type
+		new Setting(this.containerEl)
+			.setName("Open in")
+			.setDesc("Where to open files.")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(toRecord(getOpenTypeLabels()))
+					.setValue(this.plugin.settings.openType)
+					.onChange(async (value) => {
+						this.plugin.settings.openType = value as OpenType;
 						await this.plugin.saveSettings();
 					})
 			);
@@ -48,13 +65,13 @@ export class SettingTab extends PluginSettingTab {
 		// Disabled folders setting
 		new Setting(this.containerEl)
 			.setName("Disabled folders")
-			.setDesc("Skips these folders when searching for files")
+			.setDesc("Skips these folders when searching for files.")
 			.addTextArea((text) => {
 				text.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.disabledFolders)
-					.onChange((value) => {
+					.onChange(async (value) => {
 						this.plugin.settings.disabledFolders = value.trim();
-						this.plugin.saveSettings();
+						await this.plugin.saveSettings();
 					});
 			});
 	}
@@ -75,9 +92,9 @@ export class SettingTab extends PluginSettingTab {
 			props: {
 				plugin: this.plugin,
 				queries: this.plugin.settings.queries,
-				saveQueries: (queries: Query[]) => {
+				saveQueries: async (queries: Query[]) => {
 					this.plugin.settings.queries = queries;
-					this.plugin.saveSettings();
+					await this.plugin.saveSettings();
 				},
 			},
 		});

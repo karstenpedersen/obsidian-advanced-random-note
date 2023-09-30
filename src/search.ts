@@ -21,7 +21,6 @@ export class Search {
 		let result: TFile[] = [];
 		if (query.type === "Dataview") {
 			const api = getAPI();
-			console.log("Dataview");
 			if (!api) {
 				new Notice(
 					"Advanced Random Note: Dataview API could not be found, is Dataview installed?"
@@ -70,13 +69,25 @@ export class Search {
 
 			if (result.length <= 0) {
 				new Notice(
-					"Advanced Random Note: Found zero notes matching your query."
+					"Advanced Random Note: Found zero files matching your query."
 				);
 			}
 		}
 
 		return result;
 	}
+
+	searchFiles = async (files: TFile[], disabledDisabledPaths?: string): Promise<RandomNoteResult> => {
+		const result = files.filter((file) => !this.isInDisabledFolder(file, disabledDisabledPaths));
+
+		if (result.length <= 0) {
+			new Notice(
+				"Advanced Random Note: Found zero files."
+			);
+		}
+
+		return result;
+	};
 
 	processQuery(query: Query): ProcessedDefaultQuery {
 		const regexResult = {
@@ -185,13 +196,14 @@ export class Search {
 		);
 	}
 
-	isInDisabledFolder(file: TAbstractFile): boolean {
+	isInDisabledFolder(file: TAbstractFile, disabledDisabledPaths?: string): boolean {
 		if (this.plugin.settings.disabledFolders === "") return false;
 
 		return this.plugin.settings.disabledFolders
 			.split(/\r?\n/)
 			.some((disabledFolder) => {
 				const trimmedFolder = disabledFolder.trim();
+				if (disabledDisabledPaths && trimmedFolder === disabledDisabledPaths) return false;
 				return trimmedFolder && file.path.startsWith(trimmedFolder);
 			});
 	}

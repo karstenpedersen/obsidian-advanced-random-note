@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { QUERY_TYPES, Query } from "src/types";
+	import { QUERY_OPEN_TYPES, QUERY_TYPES, Query } from "src/types";
 	import { onDestroy } from "svelte";
 
 	export let query: Query;
@@ -99,6 +99,27 @@
 					bind:checked={query.useDisabledFolders}
 				/>
 			</div>
+		</div>
+	</div>
+
+	<!--  -->
+	<div class="setting-item">
+		<div class="setting-item-info">
+			<div class="setting-item-name">Open in</div>
+			<div class="setting-item-description">
+				Where to open the file.
+			</div>
+		</div>
+		<div class="setting-item-control">
+			<select
+				class="dropdown"
+				bind:value={query.openType}
+				on:change={emitHandleChange}
+			>
+				{#each QUERY_OPEN_TYPES as type}
+					<option value={type}>{type}</option>
+				{/each}
+			</select>
 		</div>
 	</div>
 

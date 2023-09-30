@@ -1,7 +1,13 @@
-import { App, TFile, type PluginManifest } from "obsidian";
+import {
+	App,
+	TAbstractFile,
+	TFile,
+	TFolder,
+	type PluginManifest,
+} from "obsidian";
 import { v4 as uuidv4 } from "uuid";
 import AdvancedRandomNote from "./main";
-import type { Query } from "./types";
+import { OPEN_TYPES, type Query } from "./types";
 
 export function moveElementInArray<T>(
 	arr: T[],
@@ -16,7 +22,9 @@ export function moveElementInArray<T>(
 	arr[toIndex] = element;
 }
 
-export function getRandomElement<T>(arr: T[]): T {
+export function getRandomElement<T>(arr: T[]): T | null {
+	if (arr.length === 0) return null;
+
 	const index = Math.floor(Math.random() * arr.length);
 	return arr[index];
 }
@@ -81,9 +89,32 @@ export function createQuery(name: string, query: string): Query {
 		type: "Default",
 		createCommand: false,
 		useDisabledFolders: true,
+		openType: "Default"
 	};
 }
 
 export function getFullPath(file: TFile): string {
 	return file.path + "/" + file.name + "." + file.path;
+}
+
+export function flattenFiles(abstractFiles: TAbstractFile[]): TFile[] {
+	return abstractFiles.map(abstractFile => flattenFile(abstractFile)).flat();
+}
+
+export function flattenFile(abstractFile: TAbstractFile): TFile[] {
+	if (abstractFile instanceof TFolder) {
+		return flattenFiles(abstractFile.children);
+	}
+	
+	return [abstractFile] as TFile[];
+}
+
+export function toRecord(arr: string[]): Record<string, string> {
+	const recordObject: Record<string, string> = {};
+	arr.forEach(item => recordObject[item] = item)
+	return recordObject;
+}
+
+export function getOpenTypeLabels(): string[] {
+	return OPEN_TYPES.map((item) => item);
 }

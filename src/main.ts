@@ -1,10 +1,11 @@
-import { Plugin, TFile } from "obsidian";
+import { Plugin, TFile, TFolder } from "obsidian";
 import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
-import type { Query } from "./types";
+import type { Query, QueryOpenType } from "./types";
 import {
 	deleteObsidianCommand,
+	flattenFile,
 	getPluginCommandId,
 	getRandomElement,
 } from "./utilities";
@@ -20,7 +21,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: "open-query-modal",
 			name: "Open query modal",
-			callback: () => this.handleopenRandomFileModal(),
+			callback: () => this.handleOpenRandomFileModal(),
 		});
 
 		// Open generic random note
@@ -40,6 +41,29 @@ export default class AdvancedRandomNote extends Plugin {
 				this.openRandomVaultFile();
 			},
 		});
+
+		this.addRibbonIcon("dice", "Open random note modal", () => {
+			this.handleOpenRandomFileModal();
+		});
+
+		// File menu
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu, file) => {
+				if (!(file instanceof TFolder) || file.isRoot()) return;
+
+				menu.addItem((item) => {
+					item.setTitle("Open random note")
+						.setIcon("dice")
+						.onClick(async () => {
+							const files = flattenFile(file);
+							const foundFiles = await new Search(
+								this
+							).searchFiles(files, file.path + "/");
+							this.openRandomFile(foundFiles);
+						});
+				});
+			})
+		);
 
 		// Setup saved queries
 		this.addQueryCommands();
@@ -64,20 +88,32 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async openFile(file: TFile) {
-		await this.app.workspace.openLinkText(
-			file.path,
-			"",
-			this.settings.openInNewLeaf,
-			{
-				active: true
-			}
-		);
+	async openFile(file: TFile, openType: QueryOpenType = "Default") {
+		if (openType === "Default") openType = this.settings.openType;
+		switch (openType) {
+			case "New Window":
+				await this.app.workspace
+					.getLeaf("window")
+					.openFile(file, { active: this.settings.setActive });
+				return;
+			case "New Leaf":
+				await this.app.workspace
+					.getLeaf("tab")
+					.openFile(file, { active: this.settings.setActive });
+				return;
+			default:
+				await this.app.workspace.openLinkText(file.path, "", false, {
+					active: this.settings.setActive,
+				});
+				break;
+		}
 	}
 
-	async openRandomFile(files: TFile[]) {
-		// Get random note from files
+	async openRandomFile(files: TFile[], openType: QueryOpenType = "Default") {
+		// Get random note from files`
 		const file = getRandomElement(files);
+
+		if (!file) return;
 
 		if (this.settings.debug) {
 			console.log("Found and opened file:");
@@ -85,18 +121,24 @@ export default class AdvancedRandomNote extends Plugin {
 		}
 
 		// Open file
-		await this.openFile(file);
+		await this.openFile(file, openType);
 	}
 
 	async openRandomMarkdownFile() {
-		await this.openRandomFile(this.app.vault.getMarkdownFiles());
+		const foundFiles = await new Search(this).searchFiles(
+			this.app.vault.getMarkdownFiles()
+		);
+		await this.openRandomFile(foundFiles);
 	}
 
 	async openRandomVaultFile() {
-		await this.openRandomFile(this.app.vault.getFiles());
+		const foundFiles = await new Search(this).searchFiles(
+			this.app.vault.getFiles()
+		);
+		await this.openRandomFile(foundFiles);
 	}
 
-	handleopenRandomFileModal() {
+	handleOpenRandomFileModal() {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
@@ -112,7 +154,7 @@ export default class AdvancedRandomNote extends Plugin {
 			return;
 		}
 
-		await this.openRandomFile(files);
+		await this.openRandomFile(files, query.openType);
 	}
 
 	addQueryCommands() {
