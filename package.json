@@ -1,6 +1,6 @@
 {
 	"name": "advanced-random-note",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "Create commands from custom queries to open random notes",
 	"main": "main.js",
 	"scripts": {

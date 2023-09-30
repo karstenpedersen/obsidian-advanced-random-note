@@ -1,9 +1,9 @@
 {
 	"id": "advanced-random-note",
 	"name": "Advanced Random Note",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"minAppVersion": "0.15.0",
-	"description": "Create commands from custom queries to open random notes",
+	"description": "Open random notes with custom queries in languages like Dataview and Regex.",
 	"author": "Karsten Finderup Pedersen",
 	"authorUrl": "https://github.com/karstenpedersen",
 	"isDesktopOnly": false

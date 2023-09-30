@@ -190,8 +190,9 @@ export class Search {
 
 		return this.plugin.settings.disabledFolders
 			.split(/\r?\n/)
-			.some((disabledFolder) =>
-				file.path.startsWith(disabledFolder.trim())
-			);
+			.some((disabledFolder) => {
+				const trimmedFolder = disabledFolder.trim();
+				return trimmedFolder && file.path.startsWith(trimmedFolder);
+			});
 	}
 }

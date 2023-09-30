@@ -97,6 +97,6 @@
 	}
 
 	.active {
-		color: yellow;
+		color: var(--color-yellow);
 	}
 </style>
