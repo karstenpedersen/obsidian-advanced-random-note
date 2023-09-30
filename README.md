@@ -95,6 +95,10 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 
 ## Version History
 
+### Version 0.0.10
+
+- 	Fix opening other types of files other than markdown files.
+
 ### Version 0.0.9
 
 -   Fix disabled folders.
