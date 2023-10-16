@@ -10,23 +10,21 @@
 	$: {
 		switch (query.type) {
 			case "Dataview":
-				queryDescription = "Only works for list queries."
-				queryPlaceholder = "LIST\n..."
+				queryDescription = "Only works for list queries.";
+				queryPlaceholder = "LIST\n...";
 				break;
 			case "Regex":
-				queryDescription = ""
-				queryPlaceholder = "Regular Expression..."
+				queryDescription = "";
+				queryPlaceholder = "Regular Expression...";
 				break;
 			default:
-				queryDescription = ""
-				queryPlaceholder = "path: ... file: ... tag: ..."
+				queryDescription = "";
+				queryPlaceholder = "path: ... file: ... tag: ...";
 				break;
 		}
 
 		if (query.type === "Dataview") {
-			
 		} else if (query.type === "Default") {
-
 		}
 	}
 
@@ -76,7 +74,7 @@
 		</div>
 	</div>
 
-	<!-- Use exluded folders -->
+	<!-- Use excluded folders -->
 	<div class="setting-item mod-toggle">
 		<div class="setting-item-info">
 			<div class="setting-item-name">Use disabled folders</div>
@@ -106,9 +104,7 @@
 	<div class="setting-item">
 		<div class="setting-item-info">
 			<div class="setting-item-name">Open in</div>
-			<div class="setting-item-description">
-				Where to open the file.
-			</div>
+			<div class="setting-item-description">Where to open the file.</div>
 		</div>
 		<div class="setting-item-control">
 			<select

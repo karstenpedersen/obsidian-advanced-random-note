@@ -1,7 +1,7 @@
 {
 	"id": "advanced-random-note",
 	"name": "Advanced Random Note",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"minAppVersion": "0.15.0",
 	"description": "Open random notes with custom queries in languages like Dataview and Regex.",
 	"author": "Karsten Finderup Pedersen",
