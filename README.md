@@ -95,6 +95,12 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 
 ## Version History
 
+### Version 0.0.11
+
+-	Add ribbon button.
+-	Open random note in folder using file right-click menu.
+-	Open random notes in new windows.
+
 ### Version 0.0.10
 
 - 	Fix opening other types of files other than markdown files.
