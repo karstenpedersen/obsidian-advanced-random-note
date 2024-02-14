@@ -21,7 +21,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: "open-query-modal",
 			name: "Open query modal",
-			callback: () => this.handleOpenRandomFileModal(),
+			callback: () => this.openQueryModal(),
 		});
 
 		// Open generic random note
@@ -42,8 +42,19 @@ export default class AdvancedRandomNote extends Plugin {
 			},
 		});
 
-		this.addRibbonIcon("dice", "Open random note modal", () => {
-			this.handleOpenRandomFileModal();
+		// ribbon button name won't be changed until plugin is reset
+		this.addRibbonIcon("dice", this.settings.ribbonActionType, () => {
+			switch (this.settings.ribbonActionType) {
+				case "Open query modal":
+					this.openQueryModal();
+					break;
+				case "Open random note":
+					this.openRandomMarkdownFile();
+					break;
+				case "Open random file":
+					this.openRandomVaultFile();
+					break;
+			}
 		});
 
 		// File menu
@@ -138,7 +149,7 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.openRandomFile(foundFiles);
 	}
 
-	handleOpenRandomFileModal() {
+	openQueryModal() {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
