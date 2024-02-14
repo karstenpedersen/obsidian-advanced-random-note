@@ -9,6 +9,9 @@ export type OpenType = (typeof OPEN_TYPES)[number];
 export const QUERY_OPEN_TYPES = ["Default", "Active Leaf", "New Leaf", "New Window"] as const;
 export type QueryOpenType = (typeof QUERY_OPEN_TYPES)[number];
 
+export const RIBBON_ACTION_TYPES = ["Open query modal", "Open random note", "Open random file"] as const;
+export type RibbonActionType = (typeof RIBBON_ACTION_TYPES)[number];
+
 export interface Query {
 	id: string;
 	name: string;
