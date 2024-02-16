@@ -87,6 +87,7 @@ export class SettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.ribbonActionType)
 				.onChange(async (value) => {
 					this.plugin.settings.ribbonActionType = value as RibbonActionType;
+					this.plugin.updateRibbonButtonTooltip(value);
 					await this.plugin.saveSettings();
 				})
 		);

@@ -1,4 +1,4 @@
-import { Plugin, TFile, TFolder } from "obsidian";
+import { ButtonComponent, Plugin, TFile, TFolder } from "obsidian";
 import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
@@ -12,6 +12,7 @@ import {
 
 export default class AdvancedRandomNote extends Plugin {
 	settings!: Settings;
+	ribbonButton!: HTMLElement;
 
 	async onload() {
 		// Load plugin settings
@@ -42,8 +43,7 @@ export default class AdvancedRandomNote extends Plugin {
 			},
 		});
 
-		// ribbon button name won't be changed until plugin is reset
-		this.addRibbonIcon("dice", this.settings.ribbonActionType, () => {
+		this.ribbonButton = this.addRibbonIcon("dice", this.settings.ribbonActionType, () => {
 			switch (this.settings.ribbonActionType) {
 				case "Open query modal":
 					this.openQueryModal();
@@ -187,5 +187,10 @@ export default class AdvancedRandomNote extends Plugin {
 			this.app,
 			getPluginCommandId(query.id, this.manifest)
 		);
+	}
+
+	updateRibbonButtonTooltip(name: string) {
+		// TODO: find proper way to update tooltip
+		new ButtonComponent(this.ribbonButton).setTooltip(name);
 	}
 }
