@@ -18,7 +18,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	disabledFolders: "",
 	debug: false,
 	openType: "Active Leaf",
-	ribbonActionType: "Open random note",
+	ribbonActionType: "Open query modal",
 	setActive: true,
 };
 
