@@ -42,7 +42,6 @@ export default class AdvancedRandomNote extends Plugin {
 			},
 		});
 
-		// ribbon button name won't be changed until plugin is reset
 		this.addRibbonIcon("dice", this.settings.ribbonActionType, () => {
 			switch (this.settings.ribbonActionType) {
 				case "Open query modal":
