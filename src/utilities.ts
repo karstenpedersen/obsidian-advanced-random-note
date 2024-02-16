@@ -130,6 +130,7 @@ export function updateRibbon(app: App, oldActionType: RibbonActionType, newActio
 		(i) => i.title === oldActionType
 	);
 	if (nativeAction) {
+		nativeAction.title = newActionType;
 		nativeAction.buttonEl.ariaLabel = newActionType;
 	}
 }
