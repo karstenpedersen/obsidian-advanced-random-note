@@ -1,14 +1,15 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import QueryView from "src/gui/queryItem/QueryView.svelte";
 import AdvancedRandomNote from "./main";
-import { type OpenType, type Query } from "./types";
-import { getOpenTypeLabels, toRecord } from "./utilities";
+import { type RibbonActionType, type OpenType, type Query } from "./types";
+import { getOpenTypeLabels, getRibbonActionTypeLabels, toRecord } from "./utilities";
 
 export interface Settings {
 	queries: Array<Query>;
 	disabledFolders: string;
 	debug: boolean;
 	openType: OpenType;
+	ribbonActionType: RibbonActionType;
 	setActive: boolean;
 }
 
@@ -17,6 +18,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	disabledFolders: "",
 	debug: false,
 	openType: "Active Leaf",
+	ribbonActionType: "Open query modal",
 	setActive: true,
 };
 
@@ -67,13 +69,29 @@ export class SettingTab extends PluginSettingTab {
 			.setName("Disabled folders")
 			.setDesc("Skips these folders when searching for files.")
 			.addTextArea((text) => {
-				text.setPlaceholder("templates/")
+				text
+					.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.disabledFolders)
 					.onChange(async (value) => {
 						this.plugin.settings.disabledFolders = value.trim();
 						await this.plugin.saveSettings();
 					});
 			});
+
+		// Ribbon action type
+		new Setting(this.containerEl)
+			.setName("Ribbon action type")
+			.setDesc("Which action to perform after tapping ribbon button.")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(toRecord(getRibbonActionTypeLabels()))
+					.setValue(this.plugin.settings.ribbonActionType)
+					.onChange(async (value) => {
+						this.plugin.settings.ribbonActionType = value as RibbonActionType;
+						this.plugin.updateRibbonButtonTooltip(value);
+						await this.plugin.saveSettings();
+					})
+			);
 	}
 
 	addQueriesSetting() {

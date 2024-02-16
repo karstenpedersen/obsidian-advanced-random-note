@@ -95,6 +95,10 @@ Queries can be enabled as commands by clicking the toggle next to them when on t
 
 ## Version History
 
+### Version 0.0.12
+
+- Add ribbon button setting to select between available actions.
+
 ### Version 0.0.11
 
 -	Add ribbon button.

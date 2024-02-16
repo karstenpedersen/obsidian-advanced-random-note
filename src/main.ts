@@ -1,4 +1,4 @@
-import { Plugin, TFile, TFolder } from "obsidian";
+import { ButtonComponent, Plugin, TFile, TFolder } from "obsidian";
 import { RandomNoteModal } from "src/gui/modals/OpenRandomNoteModal/openRandomNoteModal";
 import { Search } from "./search";
 import { DEFAULT_SETTINGS, SettingTab, Settings } from "./settings";
@@ -12,6 +12,7 @@ import {
 
 export default class AdvancedRandomNote extends Plugin {
 	settings!: Settings;
+	ribbonButton!: HTMLElement;
 
 	async onload() {
 		// Load plugin settings
@@ -21,7 +22,7 @@ export default class AdvancedRandomNote extends Plugin {
 		this.addCommand({
 			id: "open-query-modal",
 			name: "Open query modal",
-			callback: () => this.handleOpenRandomFileModal(),
+			callback: () => this.openQueryModal(),
 		});
 
 		// Open generic random note
@@ -42,8 +43,18 @@ export default class AdvancedRandomNote extends Plugin {
 			},
 		});
 
-		this.addRibbonIcon("dice", "Open random note modal", () => {
-			this.handleOpenRandomFileModal();
+		this.ribbonButton = this.addRibbonIcon("dice", this.settings.ribbonActionType, () => {
+			switch (this.settings.ribbonActionType) {
+				case "Open query modal":
+					this.openQueryModal();
+					break;
+				case "Open random note":
+					this.openRandomMarkdownFile();
+					break;
+				case "Open random file":
+					this.openRandomVaultFile();
+					break;
+			}
 		});
 
 		// File menu
@@ -138,7 +149,7 @@ export default class AdvancedRandomNote extends Plugin {
 		await this.openRandomFile(foundFiles);
 	}
 
-	handleOpenRandomFileModal() {
+	openQueryModal() {
 		const modal = new RandomNoteModal(
 			this.app,
 			this.settings.queries,
@@ -176,5 +187,10 @@ export default class AdvancedRandomNote extends Plugin {
 			this.app,
 			getPluginCommandId(query.id, this.manifest)
 		);
+	}
+
+	updateRibbonButtonTooltip(name: string) {
+		// TODO: find proper way to update tooltip
+		new ButtonComponent(this.ribbonButton).setTooltip(name);
 	}
 }
