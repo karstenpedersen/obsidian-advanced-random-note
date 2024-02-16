@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import QueryView from "src/gui/queryItem/QueryView.svelte";
 import AdvancedRandomNote from "./main";
-import { RibbonActionType, type OpenType, type Query } from "./types";
+import { type RibbonActionType, type OpenType, type Query } from "./types";
 import { getOpenTypeLabels, getRibbonActionTypeLabels, toRecord } from "./utilities";
 
 export interface Settings {
