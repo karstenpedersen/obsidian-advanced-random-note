@@ -69,7 +69,8 @@ export class SettingTab extends PluginSettingTab {
 			.setName("Disabled folders")
 			.setDesc("Skips these folders when searching for files.")
 			.addTextArea((text) => {
-				text.setPlaceholder("templates/")
+				text
+					.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.disabledFolders)
 					.onChange(async (value) => {
 						this.plugin.settings.disabledFolders = value.trim();
@@ -79,18 +80,18 @@ export class SettingTab extends PluginSettingTab {
 
 		// Ribbon action type
 		new Setting(this.containerEl)
-		.setName("Ribbon action type")
-		.setDesc("Which action to perform after tapping ribbon button.")
-		.addDropdown((dropdown) =>
-			dropdown
-				.addOptions(toRecord(getRibbonActionTypeLabels()))
-				.setValue(this.plugin.settings.ribbonActionType)
-				.onChange(async (value) => {
-					this.plugin.settings.ribbonActionType = value as RibbonActionType;
-					this.plugin.updateRibbonButtonTooltip(value);
-					await this.plugin.saveSettings();
-				})
-		);
+			.setName("Ribbon action type")
+			.setDesc("Which action to perform after tapping ribbon button.")
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOptions(toRecord(getRibbonActionTypeLabels()))
+					.setValue(this.plugin.settings.ribbonActionType)
+					.onChange(async (value) => {
+						this.plugin.settings.ribbonActionType = value as RibbonActionType;
+						this.plugin.updateRibbonButtonTooltip(value);
+						await this.plugin.saveSettings();
+					})
+			);
 	}
 
 	addQueriesSetting() {
